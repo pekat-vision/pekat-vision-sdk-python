@@ -126,7 +126,7 @@ class Instance:
             self.__start_instance()
             atexit.register(self.stop)
 
-    def recognise(self, image, response_type='context', data=None, timeout=20):
+    def analyze(self, image, response_type='context', data=None, timeout=20):
         """
         Send image to PEKAT VISION. PEKAT VISION return result of recognition.
         :param image: numpy image or path to image file

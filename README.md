@@ -19,13 +19,13 @@ from PekatVisionSDK import Instance
 p = Instance('C:\\Users\\Peter\\PekatVisionProjects\\test_project')
 
 # response - only context
-context = p.recognise('path_to_image.png')
+context = p.analyze('path_to_image.png')
 
 # response - heatmap and context
-img_heatmap, context = p.recognise('path_to_image.png', response_type='heatmap')
+img_heatmap, context = p.analyze('path_to_image.png', response_type='heatmap')
 
 # response - annotated image and context
-img_annotated, context = p.recognise('path_to_image.png', response_type='annotated_image')
+img_annotated, context = p.analyze('path_to_image.png', response_type='annotated_image')
 
 p.stop()
 ```
@@ -36,7 +36,7 @@ You cand send image in numpy array:
 import cv2
 img_np = cv2.imread('path_to_image.png')
 
-p.recognise(img_np, response_type='annotated_image')
+p.analyze(img_np, response_type='annotated_image')
 ```
 
 Access to already running PEKAT VISION instance
