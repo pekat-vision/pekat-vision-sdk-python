@@ -221,8 +221,7 @@ class Instance:
             raise ProjectNotFound(self.project_path)
 
         dist_path = self.__get_dist_path()
-        print(dist_path)
-        server_path = os.path.join(dist_path, "server/pekat_vision_server")
+        server_path = os.path.join(dist_path, "pekat_vision/pekat_vision")
 
         params = [server_path, "-data", self.project_path, "-port", str(self.port), "-host", self.host]
 
