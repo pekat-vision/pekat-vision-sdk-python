@@ -1,6 +1,6 @@
 # PEKAT VISION api
 #
-# A Python module for communication with PEKAT VISION 3.10.0 and higher
+# A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
 # Date:   20 March 2020
@@ -9,7 +9,9 @@
 import json
 import os
 import platform
+import random
 import socket
+import string
 import sys
 import subprocess
 import atexit
@@ -19,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 
 class DistNotFound(Exception):
@@ -76,7 +78,7 @@ class Instance:
             project_path=None,
             dist_path=None,
             port=None,
-            host='localhost',
+            host='127.0.0.1',
             already_running=False,
             password=None,
             api_key=None,
@@ -125,6 +127,8 @@ class Instance:
         if not already_running:
             self.__start_instance()
             atexit.register(self.stop)
+
+        self.__stopping = False
 
     def analyze(self, image, response_type='context', data=None, timeout=20):
         """
@@ -213,6 +217,10 @@ class Instance:
         s.close()
         return port
 
+    def __random_string(self, string_length):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for i in range(string_length))
+
     def __check_project(self):
         return os.path.exists(os.path.join(self.project_path, 'pekat_package.json'))
 
@@ -222,8 +230,19 @@ class Instance:
 
         dist_path = self.__get_dist_path()
         server_path = os.path.join(dist_path, "pekat_vision/pekat_vision")
+        self.stop_key = self.__random_string(10)
 
-        params = [server_path, "-data", self.project_path, "-port", str(self.port), "-host", self.host]
+        params = [
+            server_path,
+            "-data",
+            self.project_path,
+            "-port",
+            str(self.port),
+            "-host",
+            self.host,
+            "-stop_key",
+            self.stop_key
+        ]
 
         # add other arguments
         if self.api_key:
@@ -265,8 +284,13 @@ class Instance:
         :type timeout: int
         """
         # only own subprocess (PEKAT) can be stopped
-        if not self.process:
-            raise CannotBeTerminated()
+        if not self.process or self.__stopping:
+            return
 
-        self.process.kill()
-        self.process.wait(timeout)
+        self.__stopping = True
+
+        requests.get(
+            url='http://{}:{}/stop?key={}'.format(self.host, self.port, self.stop_key),
+            timeout=timeout
+        )
+
