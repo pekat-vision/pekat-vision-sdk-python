@@ -6,6 +6,8 @@ A Python module for communication with PEKAT VISION
 
 * numpy
 * python-opencv (optional)
+* PEKAT VISION 3.10.2 or higher
+
 
 ## Installation
 Type `pip install git+https://github.com/pekat-vision/pekat-vision-sdk-python`
