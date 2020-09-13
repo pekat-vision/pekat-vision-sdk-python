@@ -186,6 +186,8 @@ class Instance:
         if response_type == 'heatmap' or response_type == 'annotated_image':
             np_arr = np.frombuffer(response.content, np.uint8)
             context_base64 = response.headers.get('ContextBase64utf')
+            if context_base64 is None:
+                return response.json()
             context_json = base64.b64decode(context_base64)
             try:
                 import cv2
