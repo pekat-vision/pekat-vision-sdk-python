@@ -45,3 +45,18 @@ Access to already running PEKAT VISION instance
 ```python
 p = Instance(port=8100, host='192.168.10.0', already_running=True)
 ```
+
+Multiple cameras
+```python
+# start projects
+p1 = Instance('C:\\Users\\Peter\\PekatVisionProjects\\project_camera_1')
+p2 = Instance('C:\\Users\\Peter\\PekatVisionProjects\\project_camera_2')
+p3 = Instance('C:\\Users\\Peter\\PekatVisionProjects\\project_camera_3')
+
+
+# response - only context 
+# in loop
+context1 = p1.analyze('path_to_image_camera_1.png')
+context2 = p2.analyze('path_to_image_camera_2.png')
+context3 = p3.analyze('path_to_image_camera_3.png')
+```
