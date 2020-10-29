@@ -46,6 +46,8 @@ Access to already running PEKAT VISION instance
 p = Instance(port=8100, host='192.168.10.0', already_running=True)
 ```
 
+Remote analyzer enables you to connect to a remotely running PEKAT VISION. It is possible to connect from multiple PCs simultaneously. PEKAT VISION behaves as a server automatically.
+
 Multiple cameras
 ```python
 # start projects
