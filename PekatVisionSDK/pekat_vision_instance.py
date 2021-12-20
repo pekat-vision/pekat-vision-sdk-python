@@ -231,30 +231,31 @@ class Instance:
             raise ProjectNotFound(self.project_path)
 
         dist_path = self.__get_dist_path()
-        server_path = os.path.join(dist_path, "pekat_vision/pekat_vision")
+        server_path = os.path.join(dist_path, "starter/pekat_vision")
         self.stop_key = self.__random_string(10)
 
         params = [
             server_path,
-            "-data",
+            "start",
+            "--data",
             self.project_path,
-            "-port",
+            "--port",
             str(self.port),
-            "-host",
+            "--host",
             self.host,
-            "-stop_key",
+            "--stop_key",
             self.stop_key
         ]
 
         # add other arguments
         if self.api_key:
-            params += ["-api_key", self.api_key]
+            params += ["--api_key", self.api_key]
         if self.password:
-            params += ["-password", self.password]
+            params += ["--password", self.password]
         if self.disable_code:
-            params += ["-disable_code", self.disable_code]
+            params += ["--disable_code", self.disable_code]
         if self.tutorial_only:
-            params += ["-tutorial_only", self.tutorial_only]
+            params += ["--tutorial_only", self.tutorial_only]
 
         self.process = subprocess.Popen(
             params,
