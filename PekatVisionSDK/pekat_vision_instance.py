@@ -1,9 +1,9 @@
 # PEKAT VISION api
 #
-# A Python module for communication with PEKAT VISION 3.10.2 and higher
+# A Python module for communication with PEKAT VISION 3.12.0 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   20 March 2020
+# Date:   21 December 2021
 # Web:    https://github.com/pekat-vision
 
 import json
@@ -21,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 
 class DistNotFound(Exception):

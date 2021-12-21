@@ -6,7 +6,7 @@ A Python module for communication with PEKAT VISION
 
 * numpy
 * python-opencv (optional)
-* PEKAT VISION 3.10.2 or higher
+* PEKAT VISION 3.12.0 or higher
 
 
 ## Installation
