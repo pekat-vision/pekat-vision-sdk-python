@@ -231,7 +231,7 @@ class Instance:
             raise ProjectNotFound(self.project_path)
 
         dist_path = self.__get_dist_path()
-        server_path = os.path.join(dist_path, "starter/pekat_vision")
+        server_path = os.path.join(dist_path, "starter/pekat-vision")
         self.stop_key = self.__random_string(10)
 
         params = [
@@ -269,7 +269,7 @@ class Instance:
             if next_line == '' and self.process.poll() is not None:
                 break
             sys.stdout.flush()
-            if next_line.find("__SERVER_RUNNING__") != -1:
+            if next_line.find("Started") != -1:
                 return
             if next_line.find("OSError: [Errno 48] Address already in use") != -1:
 
