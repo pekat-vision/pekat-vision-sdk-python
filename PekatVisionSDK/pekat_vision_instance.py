@@ -3,7 +3,7 @@
 # A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   20 March 2020
+# Date:   6 May 2022
 # Web:    https://github.com/pekat-vision
 
 import json
@@ -21,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 
 class DistNotFound(Exception):
@@ -83,7 +83,8 @@ class Instance:
             password=None,
             api_key=None,
             disable_code=None,
-            tutorial_only=None
+            tutorial_only=None,
+            context_in_body=True,
     ):
         """
         Create instance of interface for communication
@@ -106,6 +107,8 @@ class Instance:
         :type disable_code: bool
         :param tutorial_only: allow only Anomoly of Surface tutorial
         :type tutorial_only: bool
+        :param context_in_body: receive context in body instead of header
+        :type context_in_body: bool
         """
         self.project_path = project_path
         self.dist_path = dist_path
@@ -116,6 +119,7 @@ class Instance:
         self.api_key = api_key
         self.disable_code = disable_code
         self.tutorial_only = tutorial_only
+        self.context_in_body = context_in_body
 
         if port is None:
             self.port = self.__find_free_ports()
@@ -154,7 +158,7 @@ class Instance:
         else:
             raise InvalidData()
 
-        if not(response_type == 'annotated_image' or response_type == 'context' or response_type == 'heatmap'):
+        if response_type not in ['annotated_image', 'context', 'heatmap']:
             raise InvalidResponseType
 
         query = 'response_type={}'.format(response_type)
@@ -165,6 +169,9 @@ class Instance:
 
         if data:
             query += '&data={}'.format(data)
+
+        if self.context_in_body:
+            query += '&context_in_body'
 
         if image_path:
             with open(image_path, 'rb') as data:
@@ -183,12 +190,19 @@ class Instance:
                 timeout=timeout
             )
 
-        if response_type == 'heatmap' or response_type == 'annotated_image':
-            np_arr = np.frombuffer(response.content, np.uint8)
-            context_base64 = response.headers.get('ContextBase64utf')
-            if context_base64 is None:
-                return response.json()
-            context_json = base64.b64decode(context_base64)
+        if response_type in ['heatmap', 'annotated_image']:
+            if self.context_in_body:
+                image_len = int(response.headers.get('ImageLen'))
+                if not image_len:
+                    return response.json()
+                np_arr = np.frombuffer(response.content[:image_len], np.uint8)
+                context_json = response.content[image_len:].decode('utf-8')
+            else:
+                np_arr = np.frombuffer(response.content, np.uint8)
+                context_base64 = response.headers.get('ContextBase64utf')
+                if context_base64 is None:
+                    return response.json()
+                context_json = base64.b64decode(context_base64)
             try:
                 import cv2
                 return cv2.imdecode(np_arr, 1), json.loads(context_json)
