@@ -84,7 +84,7 @@ class Instance:
             api_key=None,
             disable_code=None,
             tutorial_only=None,
-            context_in_body=True,
+            context_in_body=False,
     ):
         """
         Create instance of interface for communication
