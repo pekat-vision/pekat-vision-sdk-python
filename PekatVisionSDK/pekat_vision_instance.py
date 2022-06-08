@@ -85,6 +85,7 @@ class Instance:
             disable_code=None,
             tutorial_only=None,
             context_in_body=False,
+            wait_for_init_model=False
     ):
         """
         Create instance of interface for communication
@@ -109,6 +110,8 @@ class Instance:
         :type tutorial_only: bool
         :param context_in_body: receive context in body instead of header
         :type context_in_body: bool
+        :param wait_for_init_model: wait for all models to load before returning the Instance object
+        :type: wait_for_init_model: bool
         """
         self.project_path = project_path
         self.dist_path = dist_path
@@ -120,6 +123,7 @@ class Instance:
         self.disable_code = disable_code
         self.tutorial_only = tutorial_only
         self.context_in_body = context_in_body
+        self.wait_for_init_model = wait_for_init_model
 
         if port is None:
             self.port = self.__find_free_ports()
@@ -275,6 +279,9 @@ class Instance:
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT
         )
+        
+        stop_init_model = not self.wait_for_init_model
+        server_running = False
 
         # wait for start
         while True:
@@ -282,8 +289,14 @@ class Instance:
             if next_line == '' and self.process.poll() is not None:
                 break
             sys.stdout.flush()
+            
             if next_line.find("__SERVER_RUNNING__") != -1:
+                server_running = True
+            if next_line.find("STOP_INIT_MODEL") != -1:
+                stop_init_model = True
+            if server_running and stop_init_model:
                 return
+            
             if next_line.find("OSError: [Errno 48] Address already in use") != -1:
 
                 if self.port_is_defined:
