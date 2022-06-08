@@ -297,8 +297,7 @@ class Instance:
                     stop_init_model = True
                 if server_running and stop_init_model:
                     return
-            else:
-                if server_running:
+            elif server_running:
                     return
             
             if next_line.find("OSError: [Errno 48] Address already in use") != -1:
