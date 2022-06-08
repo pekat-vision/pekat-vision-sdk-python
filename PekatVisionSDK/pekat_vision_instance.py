@@ -3,7 +3,7 @@
 # A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   6 May 2022
+# Date:   8 June 2022
 # Web:    https://github.com/pekat-vision
 
 import json
@@ -21,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 
 
 class DistNotFound(Exception):
