@@ -334,6 +334,8 @@ class Instance:
         Ping Pekat server.
         :param timeout: Timeout to ping
         :type timeout: int
+        :return: ping response
+        :rtype: requests.Response
         """
         try:
             return requests.get(
