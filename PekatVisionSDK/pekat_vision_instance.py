@@ -21,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 
 class DistNotFound(Exception):
@@ -71,6 +71,10 @@ class OpenCVImportError(Exception):
     def __str__(self):
         return "You need opencv-python installed for this type of response_type"
 
+class NoConnection(Exception):
+    def __str__(self):
+        return "Could not establish connection with running instance."
+
 
 class Instance:
     def __init__(
@@ -98,7 +102,7 @@ class Instance:
         :type port: int
         :param host:
         :type host: str
-        :param already_running: Instance will not be created. It joins to existing one.
+        :param already_running: Instance will not be created. It joins to existing one. Raises NoConnection if ping fails.
         :type already_running: bool
         :param password: access to client gui
         :type password: str
@@ -135,6 +139,8 @@ class Instance:
         if not already_running:
             self.__start_instance()
             atexit.register(self.stop)
+        else:
+            self.ping()
 
         self.__stopping = False
 
@@ -322,4 +328,19 @@ class Instance:
             url='http://{}:{}/stop?key={}'.format(self.host, self.port, self.stop_key),
             timeout=timeout
         )
-
+    
+    def ping(self, timeout=5):
+        """
+        Ping Pekat server.
+        :param timeout: Timeout to ping
+        :type timeout: int
+        """
+        try:
+            return requests.get(
+                url='http://{}:{}/ping'.format(self.host, self.port),
+                timeout=timeout
+            )
+        except requests.exceptions.Timeout as e:
+            raise NoConnection()
+        except Exception as e:
+            raise e
