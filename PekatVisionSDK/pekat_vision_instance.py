@@ -110,8 +110,8 @@ class Instance:
         :type tutorial_only: bool
         :param context_in_body: receive context in body instead of header
         :type context_in_body: bool
-        :param wait_for_init_mode: wait for all models to load before returning the Instance object
-        :type: wait_for_init_mode: bool
+        :param wait_for_init_model: wait for all models to load before returning the Instance object
+        :type: wait_for_init_model: bool
         """
         self.project_path = project_path
         self.dist_path = dist_path
