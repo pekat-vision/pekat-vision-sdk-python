@@ -280,7 +280,7 @@ class Instance:
             stderr=subprocess.STDOUT
         )
         
-        stop_init_model = False
+        stop_init_model = not self.wait_for_init_model
         server_running = False
 
         # wait for start
@@ -292,13 +292,10 @@ class Instance:
             
             if next_line.find("__SERVER_RUNNING__") != -1:
                 server_running = True
-            if self.wait_for_init_model:
-                if next_line.find("STOP_INIT_MODEL") != -1:
-                    stop_init_model = True
-                if server_running and stop_init_model:
-                    return
-            elif server_running:
-                    return
+            if next_line.find("STOP_INIT_MODEL") != -1:
+                stop_init_model = True
+            if server_running and stop_init_model:
+                return
             
             if next_line.find("OSError: [Errno 48] Address already in use") != -1:
 
