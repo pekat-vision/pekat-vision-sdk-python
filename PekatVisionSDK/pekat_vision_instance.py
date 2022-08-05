@@ -89,7 +89,8 @@ class Instance:
             disable_code=None,
             tutorial_only=None,
             context_in_body=False,
-            wait_for_init_model=False
+            wait_for_init_model=False,
+            ping=True
     ):
         """
         Create instance of interface for communication
@@ -115,7 +116,9 @@ class Instance:
         :param context_in_body: receive context in body instead of header
         :type context_in_body: bool
         :param wait_for_init_model: wait for all models to load before returning the Instance object
-        :type: wait_for_init_model: bool
+        :type wait_for_init_model: bool
+        :param ping: ping the address to check whether the Instance is running
+        :type ping: bool
         """
         self.project_path = project_path
         self.dist_path = dist_path
@@ -139,7 +142,8 @@ class Instance:
         if not already_running:
             self.__start_instance()
             atexit.register(self.stop)
-        else:
+
+        if ping:
             self.ping()
 
         self.__stopping = False
