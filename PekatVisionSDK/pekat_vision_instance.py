@@ -3,7 +3,7 @@
 # A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   8 June 2022
+# Date:   5 August 2022
 # Web:    https://github.com/pekat-vision
 
 import json
