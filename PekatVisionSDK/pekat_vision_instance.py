@@ -3,7 +3,7 @@
 # A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   5 August 2022
+# Date:   11 August 2022
 # Web:    https://github.com/pekat-vision
 
 import json
@@ -90,7 +90,8 @@ class Instance:
             tutorial_only=None,
             context_in_body=False,
             wait_for_init_model=False,
-            ping=True
+            ping=True,
+            gpu=0,
     ):
         """
         Create instance of interface for communication
@@ -119,6 +120,8 @@ class Instance:
         :type wait_for_init_model: bool
         :param ping: ping the address to check whether the Instance is running
         :type ping: bool
+        :param gpu: which GPU to start project on. It is ignored is already_running=True
+        :type gpu: int
         """
         self.project_path = project_path
         self.dist_path = dist_path
@@ -131,6 +134,7 @@ class Instance:
         self.tutorial_only = tutorial_only
         self.context_in_body = context_in_body
         self.wait_for_init_model = wait_for_init_model
+        self.gpu = gpu
 
         if port is None:
             self.port = self.__find_free_ports()
@@ -271,8 +275,11 @@ class Instance:
             "-host",
             self.host,
             "-stop_key",
-            self.stop_key
+            self.stop_key,
         ]
+        
+        if self.gpu:
+            params += ["-gpu", self.gpu]
 
         # add other arguments
         if self.api_key:
