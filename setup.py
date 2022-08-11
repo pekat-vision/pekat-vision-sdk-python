@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="pekat-vision-sdk",
     packages=['PekatVisionSDK'],
-    version="1.3.2",
+    version="1.3.3",
     author_email="developers@pekatvision.com",
     description="A Python module for communication with PEKAT VISION",
     long_description=long_description,
