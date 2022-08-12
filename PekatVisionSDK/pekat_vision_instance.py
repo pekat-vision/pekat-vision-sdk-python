@@ -21,7 +21,7 @@ import numpy as np
 import requests
 
 
-__version__ = '1.3.2'
+__version__ = '1.3.3'
 
 
 class DistNotFound(Exception):
@@ -279,7 +279,7 @@ class Instance:
         ]
         
         if self.gpu:
-            params += ["-gpu", self.gpu]
+            params += ["-gpu", str(self.gpu)]
 
         # add other arguments
         if self.api_key:
