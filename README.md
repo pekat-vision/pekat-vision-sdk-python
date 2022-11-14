@@ -46,6 +46,11 @@ Access to already running PEKAT VISION instance
 p = Instance(port=8100, host='192.168.10.0', already_running=True)
 ```
 
+If secure image analyze is enabled for the Pekat project, you need to use the 'api_key' parameter with the corresponding API key that was generated for the project:
+```python
+p = Instance(port=8000, host='127.0.0.1', already_running=True, api_key='write_your_api_key_here')
+```
+
 Remote analyzer enables you to connect to a remotely running PEKAT VISION. It is possible to connect from multiple PCs simultaneously. PEKAT VISION behaves as a server automatically.
 
 Multiple cameras
