@@ -10,7 +10,7 @@ A Python module for communication with PEKAT VISION
 
 
 ## Installation
-Type `pip install git+https://github.com/pekat-vision/pekat-vision-sdk-python`
+Type `pip install pekat-vision-sdk`
 
 ## Usage
 
