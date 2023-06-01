@@ -3,25 +3,27 @@
 # A Python module for communication with PEKAT VISION 3.10.2 and higher
 #
 # Author: developers@pekatvision.com
-# Date:   11 August 2022
+# Date:   18 May 2023
 # Web:    https://github.com/pekat-vision
 
+import atexit
+import base64
 import json
 import os
 import platform
 import random
 import socket
 import string
-import sys
 import subprocess
-import atexit
-import base64
+import sys
+from pathlib import Path
+from typing import Literal, Optional, Tuple, Union
 
 import numpy as np
 import requests
+from numpy.typing import NDArray
 
-
-__version__ = '1.3.3'
+StrOrPathLike = Union[str, os.PathLike]
 
 
 class DistNotFound(Exception):
@@ -55,7 +57,7 @@ class CannotBeTerminated(Exception):
 
 
 class ProjectNotFound(Exception):
-    def __init__(self, path):
+    def __init__(self, path: StrOrPathLike):
         self.path = path
 
     def __str__(self):
@@ -71,6 +73,7 @@ class OpenCVImportError(Exception):
     def __str__(self):
         return "You need opencv-python installed for this type of response_type"
 
+
 class NoConnection(Exception):
     def __str__(self):
         return "Could not establish connection with running instance."
@@ -79,29 +82,29 @@ class NoConnection(Exception):
 class Instance:
     def __init__(
             self,
-            project_path=None,
-            dist_path=None,
-            port=None,
-            host='127.0.0.1',
-            already_running=False,
-            password=None,
-            api_key=None,
-            disable_code=None,
-            tutorial_only=None,
-            context_in_body=False,
-            wait_for_init_model=False,
-            ping=True,
-            gpu=0,
+            project_path: Optional[StrOrPathLike] = None,
+            dist_path: Optional[StrOrPathLike] = None,
+            port: Optional[int] = None,
+            host: str = '127.0.0.1',
+            already_running: bool = False,
+            password: Optional[str] = None,
+            api_key: Optional[str] = None,
+            disable_code: bool = False,
+            tutorial_only: bool = False,
+            context_in_body: bool = False,
+            wait_for_init_model: bool = False,
+            ping: bool = True,
+            gpu: int = 0,
     ):
         """
         Create instance of interface for communication
 
         :param project_path: Path to project. It is ignored is already_running=True
-        :type project_path: str
+        :type project_path: StrOrPathLike | None
         :param dist_path: path to PEKAT VISION binaries. It is ignored is already_running=True
-        :type dist_path: str
+        :type dist_path: StrOrPathLike | None
         :param port:
-        :type port: int
+        :type port: int | None
         :param host:
         :type host: str
         :param already_running: Instance will not be created. It joins to existing one. Raises NoConnection if ping fails.
@@ -123,8 +126,8 @@ class Instance:
         :param gpu: which GPU to start project on. It is ignored is already_running=True
         :type gpu: int
         """
-        self.project_path = project_path
-        self.dist_path = dist_path
+        self.project_path = Path(project_path) if project_path else None
+        self.dist_path = Path(dist_path) if dist_path else None
 
         self.host = host
         self.already_running = already_running
@@ -152,26 +155,26 @@ class Instance:
 
         self.__stopping = False
 
-    def analyze(self, image, response_type='context', data=None, timeout=20):
+    def analyze(self, image: Union[NDArray[np.uint8], StrOrPathLike], response_type: Literal['annotated_image', 'context', 'heatmap'] = 'context', data: Optional[str] = None, timeout: float = 20) -> Union[Tuple[NDArray[np.uint8], dict], dict]:
         """
         Send image to PEKAT VISION. PEKAT VISION return result of recognition.
         :param image: numpy image or path to image file
-        :type image: numpy, str
+        :type image: NDArray[np.uint8] | StrOrPathLike
         :param response_type: more in PEKAT VISION doc
         :type response_type: str
         :param data: adds data to the query - more in PEKAT VISION doc
-        :type data: str
-        :param timeout: Timeout to request
-        :type timeout: int
+        :type data: str | None
+        :param timeout: seconds to request timeout
+        :type timeout: float
         :return: results of recognition based on response_type
-        :rtype: (numpy, object), object
+        :rtype: (NDArray[np.uint8], dict) | dict
         """
         image_path = None
         numpy_image = None
 
-        if isinstance(image, str):
-            image_path = image
-        elif isinstance(image, (np.ndarray, np.generic)):
+        if isinstance(image, StrOrPathLike):
+            image_path = Path(image)
+        elif isinstance(image, np.ndarray):
             numpy_image = image
         else:
             raise InvalidData()
@@ -191,28 +194,31 @@ class Instance:
         if self.context_in_body:
             query += '&context_in_body'
 
-        if image_path:
-            with open(image_path, 'rb') as data:
-                response = requests.post(
-                    url='{}/analyze_image?{}'.format(url, query),
-                    data=data.read(),
-                    timeout=timeout,
-                    headers={'Content-Type': 'application/octet-stream'}
-                )
-        else:
-            shape = numpy_image.shape
+        if image_path is not None:
+            image_data = image_path.read_bytes()
             response = requests.post(
-                url='{}/analyze_raw_image?width={}&height={}&{}'.format(url, shape[1], shape[0], query),
+                url='{}/analyze_image?{}'.format(url, query),
+                data=image_data,
+                timeout=timeout,
+                headers={'Content-Type': 'application/octet-stream'}
+            )
+        elif numpy_image is not None:
+            height, width, _ = numpy_image.shape
+            response = requests.post(
+                url='{}/analyze_raw_image?width={}&height={}&{}'.format(url, width, height, query),
                 data=numpy_image.tobytes(),
                 headers={'Content-Type': 'application/octet-stream'},
                 timeout=timeout
             )
+        else:
+            return {}
 
         if response_type in ['heatmap', 'annotated_image']:
             if self.context_in_body:
-                image_len = int(response.headers.get('ImageLen'))
-                if not image_len:
+                image_len_str = response.headers.get('ImageLen')
+                if not image_len_str:
                     return response.json()
+                image_len = int(image_len_str)
                 np_arr = np.frombuffer(response.content[:image_len], np.uint8)
                 context_json = response.content[image_len:].decode('utf-8')
             else:
@@ -229,17 +235,16 @@ class Instance:
         else:
             return response.json()
 
-    def __get_dist_path(self):
+    def __get_dist_path(self) -> Path:
         if self.dist_path:
-            if os.path.exists(self.dist_path):
+            if self.dist_path.exists():
                 return self.dist_path
             else:
                 raise DistNotExists()
         elif platform.system() == "Windows":
-            program_files_path = "{}\\Program Files".format(os.environ['systemdrive'])
-            for i in os.listdir(program_files_path):
-                if i.startswith("PEKAT VISION "):
-                    return os.path.join(program_files_path, i)
+            program_files_path = Path(os.environ['systemdrive']) / "Program Files"
+            for p in reversed(sorted(program_files_path.glob("PEKAT VISION *"))):
+                return program_files_path / p  # Path to the newest version of PEKAT VISION in Program Files
 
         raise DistNotFound()
 
@@ -251,19 +256,21 @@ class Instance:
         s.close()
         return port
 
-    def __random_string(self, string_length):
+    def __random_string(self, string_length: int) -> str:
         letters = string.ascii_lowercase
-        return ''.join(random.choice(letters) for i in range(string_length))
+        return ''.join(random.choice(letters) for _ in range(string_length))
 
-    def __check_project(self):
-        return os.path.exists(os.path.join(self.project_path, 'pekat_package.json'))
+    def __check_project(self) -> bool:
+        assert self.project_path is not None
+        return (self.project_path / "pekat_package.json").exists()
 
     def __start_instance(self):
+        assert self.project_path is not None
         if not self.__check_project():
             raise ProjectNotFound(self.project_path)
 
         dist_path = self.__get_dist_path()
-        server_path = os.path.join(dist_path, "pekat_vision/pekat_vision")
+        server_path = dist_path / "pekat_vision" / "pekat_vision"
         self.stop_key = self.__random_string(10)
 
         params = [
@@ -277,7 +284,7 @@ class Instance:
             "-stop_key",
             self.stop_key,
         ]
-        
+
         if self.gpu:
             params += ["-gpu", str(self.gpu)]
 
@@ -296,24 +303,24 @@ class Instance:
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT
         )
-        
+
         stop_init_model = not self.wait_for_init_model
         server_running = False
 
         # wait for start
         while True:
-            next_line = self.process.stdout.readline().decode()
+            next_line = self.process.stdout.readline().decode()  # type: ignore
             if next_line == '' and self.process.poll() is not None:
                 break
             sys.stdout.flush()
-            
+
             if next_line.find("__SERVER_RUNNING__") != -1:
                 server_running = True
             if next_line.find("STOP_INIT_MODEL") != -1:
                 stop_init_model = True
             if server_running and stop_init_model:
                 return
-            
+
             if next_line.find("OSError: [Errno 48] Address already in use") != -1:
 
                 if self.port_is_defined:
@@ -323,11 +330,11 @@ class Instance:
                     return self.__start_instance()
         raise PekatNotStarted()
 
-    def stop(self, timeout=5):
+    def stop(self, timeout: float = 5):
         """
         Stop running instance
         :param timeout: Timeout to kill process
-        :type timeout: int
+        :type timeout: float
         """
         # only own subprocess (PEKAT) can be stopped
         if not self.process or self.__stopping:
@@ -339,12 +346,12 @@ class Instance:
             url='http://{}:{}/stop?key={}'.format(self.host, self.port, self.stop_key),
             timeout=timeout
         )
-    
-    def ping(self, timeout=5):
+
+    def ping(self, timeout: float = 5):
         """
         Ping Pekat server.
         :param timeout: Timeout to ping
-        :type timeout: int
+        :type timeout: float
         :return: ping response
         :rtype: requests.Response
         """
@@ -353,7 +360,7 @@ class Instance:
                 url='http://{}:{}/ping'.format(self.host, self.port),
                 timeout=timeout
             )
-        except requests.exceptions.Timeout as e:
+        except requests.exceptions.Timeout:
             raise NoConnection()
         except Exception as e:
             raise e

@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pekat-vision-sdk"
+dynamic = ["version"]
+description = "A Python module for communication with PEKAT VISION"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.6"
+authors = [{ email = "developers@pekatvision.com" }]
+maintainers = [{ email = "developers@pekatvision.com" }]
+keywords = ["pekat", "pekatvision", "pekatvisionsdk", "vision", "sdk"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+]
+dependencies = ["numpy", "requests"]
+
+[project.optional-dependencies]
+opencv = ["opencv-python"]
+
+[project.urls]
+Homepage = "https://github.com/pekat-vision/pekat-vision-sdk-python"
+repository = "https://github.com/pekat-vision/pekat-vision-sdk-python.git"
+
+[tool.hatch.version]
+path = "src/PekatVisionSDK/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/PekatVisionSDK"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/PekatVisionSDK"]
+
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest",
+    "opencv-python"
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:test}"
+
+[tool.hatch.envs.test]
+dependencies = [
+    "pytest",
+    "requests",
+    "numpy"
+]
+
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:test}"
