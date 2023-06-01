@@ -23,8 +23,6 @@ import numpy as np
 import requests
 from numpy.typing import NDArray
 
-__version__ = '1.4.0'
-
 StrOrPathLike = Union[str, os.PathLike]
 
 

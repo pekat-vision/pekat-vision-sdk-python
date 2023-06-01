@@ -1,2 +1,9 @@
 test/project_template
 .idea
+.vscode
+.venv
+.hatch
+__pycache__
+
+*.whl
+*.tar.gz
