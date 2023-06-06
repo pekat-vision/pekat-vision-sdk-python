@@ -203,7 +203,7 @@ class Instance:
                 headers={'Content-Type': 'application/octet-stream'}
             )
         elif numpy_image is not None:
-            height, width, _ = numpy_image.shape
+            height, width = numpy_image.shape[:2]
             response = requests.post(
                 url='{}/analyze_raw_image?width={}&height={}&{}'.format(url, width, height, query),
                 data=numpy_image.tobytes(),
