@@ -242,7 +242,7 @@ class Instance:
             else:
                 raise DistNotExists()
         elif platform.system() == "Windows":
-            program_files_path = Path(os.environ.get("PROGRAMFILES"))
+            program_files_path = Path(os.environ["PROGRAMFILES"])
             for p in reversed(sorted(program_files_path.glob("PEKAT VISION *"))):
                 return program_files_path / p  # Path to the newest version of PEKAT VISION in Program Files
 
