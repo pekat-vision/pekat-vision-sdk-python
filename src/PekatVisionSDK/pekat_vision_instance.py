@@ -172,6 +172,9 @@ class Instance:
         image_path = None
         numpy_image = None
 
+        if sys.version_info < (3, 10):
+            StrOrPathLike = (str, os.PathLike)
+
         if isinstance(image, StrOrPathLike):
             image_path = Path(image)
         elif isinstance(image, np.ndarray):
