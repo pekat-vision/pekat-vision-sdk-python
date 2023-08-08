@@ -173,6 +173,7 @@ class Instance:
         numpy_image = None
 
         if sys.version_info < (3, 10):
+            global StrOrPathLike
             StrOrPathLike = (str, os.PathLike)
 
         if isinstance(image, StrOrPathLike):
