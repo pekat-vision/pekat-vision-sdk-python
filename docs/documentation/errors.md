@@ -1,0 +1,3 @@
+# Errors
+
+::: PekatVisionSDK.errors
