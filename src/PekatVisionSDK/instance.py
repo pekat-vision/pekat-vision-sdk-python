@@ -140,7 +140,7 @@ class Instance:
 
         installed_pekats = sorted(
             pekat_install_parent_dir.glob(f"{pekat_install_base_name}*"),
-            key=lambda x: version.parse(x.name.lstrip(pekat_install_base_name)),
+            key=lambda x: version.parse(x.name.split(pekat_install_base_name)[1]),
             reverse=True,
         )
 
