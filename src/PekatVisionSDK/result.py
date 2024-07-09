@@ -12,7 +12,7 @@ class Result(NamedTuple):
     """Class representing the result of [`Instance.analyze`][PekatVisionSDK.Instance.analyze].
 
     Attributes:
-        image: Encoded image, to get the decoded image, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
+        image_bytes: Encoded PNG image, to get the decoded image, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
         context: Context dictionary.
     """
 

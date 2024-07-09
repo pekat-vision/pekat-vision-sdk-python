@@ -345,12 +345,12 @@ class Instance:
 
         `response_type` will affect the `image` of the returned [`Result`][PekatVisionSDK.Result]:
 
-        - `"context"`: context only, `Result.image` will be `None`.
-        - `"image"`: `Result.image` will contain the processed image.
-        - `"annotated_image"`: `Result.image` will contain the processed image with drawn detected rectangles.
-        - `"heatmap"`: `Result.image` will contain the layered heatmaps of the processed image.
+        - `"context"`: context only, `Result.image_bytes` will be `None`.
+        - `"image"`: `Result.image_bytes` will contain the processed image.
+        - `"annotated_image"`: `Result.image_bytes` will contain the processed image with drawn detected rectangles.
+        - `"heatmap"`: `Result.image_bytes` will contain the layered heatmaps of the processed image.
 
-        In order to decode the image in `Result.image`, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
+        In order to decode the image in `Result.image_bytes`, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
 
         Arguments:
             image: Path to the image, encoded image bytes or numpy image.
