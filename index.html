@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/logo.svg">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
     
     
       
@@ -737,28 +737,24 @@
 </div>
 <p>Depending on the response type, the image may or may not be present in the result, see <a href="documentation/instance/#PekatVisionSDK.Instance.analyze">analyze</a> for more.</p>
 <h3 id="processing">Processing<a class="headerlink" href="#processing" title="Permanent link">&para;</a></h3>
-<p>The result contains an encoded image and the <a href="https://pekatvision.atlassian.net/wiki/spaces/KB3/pages/698058893/Context">context</a> dictionary.</p>
-<p>In case response type was other than the default <code>"context"</code>, we can also get the resulting image.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Context only</label><label for="__tabbed_3_2">Image</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-py3 highlight"><pre><span></span><code><span class="c1"># Getting the context</span>
+<p>The result contains an encoded PNG image and the <a href="https://pekatvision.atlassian.net/wiki/spaces/KB3/pages/698058893/Context">context</a> dictionary.</p>
+<p>In case response type was <code>"context"</code>, <code>image_bytes</code> will be <code>None</code> and <a href="documentation/result/#PekatVisionSDK.Result.get_decoded_image">get_decoded_image</a> will raise an exception.</p>
+<!-- markdownlint-disable-next-line -->
+<div class="language-py3 highlight"><span class="filename">Processing the result</span><pre><span></span><code><span class="c1"># Getting the context</span>
 <span class="n">context</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">context</span>
 
 <span class="c1"># Getting the result of evaluation</span>
 <span class="n">evaluation_result</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-py3 highlight"><pre><span></span><code><span class="c1"># Getting the numpy image</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_decoded_image</span><span class="p">()</span>
+
+<span class="c1"># Getting the numpy image</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_decoded_image</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;analyze called with response_type=&#39;context&#39;&quot;</span><span class="p">)</span>
 
 <span class="c1"># In case we need just PNG bytes</span>
-<span class="n">image_bytes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_bytes</span>
+<span class="n">image_bytes</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_bytes</span>  <span class="c1"># This can be None</span>
 </code></pre></div>
-</div>
-</div>
-</div>
 <h2 id="without-opencv">Without OpenCV<a class="headerlink" href="#without-opencv" title="Permanent link">&para;</a></h2>
 <p>You can install this module without <a href="https://opencv.org/">OpenCV</a> if you</p>
 <ul>
@@ -822,7 +818,7 @@
     <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tracking", "navigation.top", "navigation.sections", "content.code.annotate", "content.code.copy", "content.tabs.link", "toc.follow"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      <script src="assets/javascripts/bundle.ad660dcc.min.js"></script>
       
     
   </body>
