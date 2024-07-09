@@ -138,14 +138,14 @@ class Instance:
         else:
             raise DistNotFoundError
 
-        for p in sorted(
+        installed_pekats = sorted(
             pekat_install_parent_dir.glob(f"{pekat_install_base_name}*"),
             key=lambda x: version.parse(x.name.lstrip(pekat_install_base_name)),
             reverse=True,
-        ):
-            return (
-                pekat_install_parent_dir / p
-            )  # Path to the newest version of PEKAT VISION in the default installation directory
+        )
+
+        if installed_pekats:
+            return installed_pekats[0]
 
         raise DistNotFoundError
 
