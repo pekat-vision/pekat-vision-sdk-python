@@ -76,29 +76,27 @@ Depending on the response type, the image may or may not be present in the resul
 
 ### Processing
 
-The result contains an encoded image and the [context] dictionary.
+The result contains an encoded PNG image and the [context] dictionary.
 
-In case response type was other than the default `"context"`, we can also get the resulting image.
+In case response type was `"context"`, `image_bytes` will be `None` and [get_decoded_image] will raise an exception.
 
-=== "Context only"
+<!-- markdownlint-disable-next-line -->
+```py3 title="Processing the result"
+# Getting the context
+context = result.context
 
-    ```py3
-    # Getting the context
-    context = result.context
+# Getting the result of evaluation
+evaluation_result = context["result"]
 
-    # Getting the result of evaluation
-    evaluation_result = context["result"]
-    ```
-
-=== "Image"
-
-    ```py3
-    # Getting the numpy image
+# Getting the numpy image
+try:
     image = result.get_decoded_image()
+except ValueError:
+    print("analyze called with response_type='context'")
 
-    # In case we need just PNG bytes
-    image_bytes = result.image_bytes
-    ```
+# In case we need just PNG bytes
+image_bytes = result.image_bytes  # This can be None
+```
 
 ## Without OpenCV
 
@@ -110,3 +108,4 @@ You can install this module without [OpenCV](https://opencv.org/) if you
 [Instance]: documentation/instance.md
 [analyze]: documentation/instance.md/#PekatVisionSDK.Instance.analyze
 [context]: https://pekatvision.atlassian.net/wiki/spaces/KB3/pages/698058893/Context
+[get_decoded_image]: documentation/result.md/#PekatVisionSDK.Result.get_decoded_image
