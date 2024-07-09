@@ -4,7 +4,7 @@ A Python module for communication with [PEKAT VISION](https://www.pekatvision.co
 
 ## Installation
 
-Type `pip install pekat-vision-sdk[opencv]` into your terminal.
+Type `pip install "pekat-vision-sdk[opencv]"` into your terminal.
 
 ## Example
 
