@@ -225,7 +225,7 @@ class Instance:
             if server_running and stop_init_model:
                 return None
 
-            if next_line.find("OSError: [Errno 48] Address already in use") != -1:
+            if "OSError: [Errno 48] Address already in use" in next_line:
                 if self.port_is_defined:
                     raise PortIsAllocatedError(self.port)
                 self.port = self._find_free_ports()
