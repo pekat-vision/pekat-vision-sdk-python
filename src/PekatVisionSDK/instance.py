@@ -79,7 +79,7 @@ class Instance:
             context_in_body: Whether to send the `context` `dict`  in the response body.
                 Set to `True` if the resulting context is larger than 4KB.
             wait_for_init_model: Whether to wait for all models to be initialized before returning the [Instance][PekatVisionSDK.Instance] object.
-                Ignored if `already_running` is `False`.
+                Ignored if `already_running` is `True`.
             ping: Whether to send a ping request to `HOST:PORT/ping` upon creating
                 the instance.
             gpu: Which GPU to start project on.
