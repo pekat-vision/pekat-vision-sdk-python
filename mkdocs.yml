@@ -1,0 +1,86 @@
+site_name: PEKAT VISION SDK
+repo_name: PekatVisionSDK
+repo_url: https://github.com/pekat-vision/pekat-vision-sdk-python
+site_description: A Python module for communication with [PEKAT VISION](https://www.pekatvision.com/products/software/)
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  favicon: assets/images/logo.svg
+  logo: assets/images/logo.svg
+  features:
+    - navigation.tracking
+    - navigation.top
+    - navigation.sections
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+nav:
+  - Home:
+      - Overview: index.md
+      - Changelog: CHANGELOG.md
+      - Upgrading: UPGRADING.md
+  - Documentation:
+      - Instance: documentation/instance.md
+      - Result: documentation/result.md
+      - Errors: documentation/errors.md
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      pygments_lang_class: true
+  - toc:
+      permalink: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          selection:
+            rendering:
+              merge_init_into_class: true
+          options:
+            members_order: source
+            separate_signature: true
+            filters:
+              - "!^_"
+              - "__"
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            show_source: false
+            show_bases: false
+            show_signature_annotations: true
+            docstring_style: google
+          import:
+            - https://docs.python.org/3/objects.inv
+
+hooks:
+  - hooks/on_pre_build.py
+watch:
+  - src/PekatVisionSDK
+  - CHANGELOG.md
+  - UPGRADING.md
+extra_css:
+  - style.css
