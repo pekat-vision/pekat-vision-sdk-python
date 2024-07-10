@@ -1,9 +1,4 @@
-"""Python module for communication with PEKAT VISION 3.10.2 and higher.
-
-Author: developers@pekatvision.com
-Date:   18 May 2023
-Web:    https://github.com/pekat-vision
-"""
+"""Python module for communication with PEKAT VISION 3.10.2 and higher."""
 
 import atexit
 import base64

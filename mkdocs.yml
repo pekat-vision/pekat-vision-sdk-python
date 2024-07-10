@@ -1,6 +1,7 @@
 site_name: PEKAT VISION SDK
 repo_name: PekatVisionSDK
 repo_url: https://github.com/pekat-vision/pekat-vision-sdk-python
+site_description: A Python module for communication with [PEKAT VISION](https://www.pekatvision.com/products/software/)
 theme:
   name: material
   icon:
@@ -25,7 +26,7 @@ theme:
       scheme: slate
       toggle:
         icon: material/weather-night
-        name: Switch to system preference
+        name: Switch to light mode
 
 nav:
   - Home:
