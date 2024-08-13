@@ -116,7 +116,7 @@ jobs:
           --user
           hatch
       - name: Attach commit hash to version
-        run: hatch version 
+        run: hatch version "$(hatch version).dev$(git rev-list v$(hatch version)..HEAD --count)"
       - name: Build a binary wheel and a source tarball
         run: python3 -m build -w -s
       - name: Publish distribution 📦 to TestPyPI
