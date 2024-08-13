@@ -91,10 +91,8 @@ jobs:
           '${{ github.ref_name }}' dist/**
           --repo '${{ github.repository }}'
 
-  publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
-    needs:
-      - build
+  build-and-publish-to-testpypi:
+    name: Build distribution and publish it to TestPyPI
     runs-on: ubuntu-latest
 
     environment:
@@ -105,11 +103,21 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-      - name: Download all the dists
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: python-package-distributions
-          path: dist/
+          python-version: "3.x"
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+      - name: Attach commit hash to version
+        run: hatch version 
+      - name: Build a binary wheel and a source tarball
+        run: python3 -m build -w -s
       - name: Publish distribution 📦 to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
