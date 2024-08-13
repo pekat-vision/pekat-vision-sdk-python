@@ -1,0 +1,50 @@
+name: Latest Changes
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  latest-changes:
+    runs-on: ubuntu-latest
+    # Run only if github.event.pull_request is not null and PR does not contain "Nolog" label
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'NoLog') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PEKAT_VISION_SDK_PYTHON_LATEST_CHANGES }}
+      - name: Latest Changes
+        uses: docker://tiangolo/latest-changes:0.3.0
+        with:
+          token: ${{ secrets.PEKAT_VISION_SDK_PYTHON_LATEST_CHANGES }}
+          template_file: latest-changes.jinja2
+          latest_changes_file: CHANGELOG.md
+          latest_changes_header: "# Changelog"
+          label_header_prefix: "### "
+          end_regex: "^## "
+          labels: >
+            [
+              {"label": "Add", "header": "Added"},
+              {"label": "Change", "header": "Changed"},
+              {"label": "Fix", "header": "Fixed"},
+              {"label": "Remove", "header": "Removed"}
+            ]
+      - name: Higlight breaking changes
+        run: |
+          breaking=$(python -c 'print("Breaking" in ${{ toJson(github.event.pull_request.labels.*.name) }})')
+          if [ $breaking = "True" ]; then
+            prnum=${{ github.event.pull_request.number }}
+            sed -i -E "s/^-(.*PR \[#$prnum\])/- **Breaking**:\1/g" CHANGELOG.md
+          fi
+          sudo chown -R runner:docker .git
+      - name: Commit breaking changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "CHANGELOG.md"
+          message: "Highlight breaking changes in CHANGELOG.md"
+          author_name: github-actions
+          author_email: github-actions@github.com

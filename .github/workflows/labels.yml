@@ -1,0 +1,28 @@
+name: Pull Request Labels
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: NoLog or Breaking
+        uses: mheap/github-action-required-labels@v5
+        with:
+          token: ${{ secrets.PEKAT_VISION_SDK_PYTHON_LABELS }}
+          mode: maximum
+          count: 1
+          labels: |
+            NoLog
+            Breaking
+      - name: Only one regular label
+        uses: mheap/github-action-required-labels@v5
+        with:
+          token: ${{ secrets.PEKAT_VISION_SDK_PYTHON_LABELS }}
+          mode: exactly
+          count: 1
+          labels: |
+            Add
+            Change
+            Fix
+            Remove
