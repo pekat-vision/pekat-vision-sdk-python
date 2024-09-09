@@ -378,7 +378,7 @@ class Instance:
 
     def send_random(
         self,
-        shape: Tuple[int, ...],
+        shape: Tuple[int, ...] = (512, 512, 3),
         response_type: ResponseType = "context",
         data: Optional[str] = None,
         timeout: float = 20,
