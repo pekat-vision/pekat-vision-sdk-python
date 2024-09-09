@@ -400,7 +400,7 @@ class Instance:
                 If `response_type` is `"context"`, then the returned image is `None`.
         """
         return self.analyze(
-            (np.random.default_rng().random(shape) * 256).astype(np.uint8),
+            np.random.default_rng().integers(0, 256, shape, dtype=np.uint8),
             response_type,
             data,
             timeout,
