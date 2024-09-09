@@ -100,6 +100,7 @@ class Instance:
         self.wait_for_init_model = wait_for_init_model
         self.gpu = gpu
 
+        self.process: Optional[subprocess.Popen] = None
         self.stop_key: Optional[str] = None
 
         if port is None:
