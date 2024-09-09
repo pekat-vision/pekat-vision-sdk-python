@@ -11,7 +11,7 @@ import string
 import subprocess
 import sys
 from pathlib import Path
-from typing import Literal, Optional, Union, get_args
+from typing import Literal, Optional, Tuple, Union, get_args
 
 import numpy as np
 import requests
@@ -375,6 +375,36 @@ class Instance:
             return self._analyze_numpy(image, response_type, data, timeout)
 
         raise InvalidDataTypeError(type(image))
+
+    def send_random(
+        self,
+        shape: Tuple[int, ...] = (512, 512, 3),
+        response_type: ResponseType = "context",
+        data: Optional[str] = None,
+        timeout: float = 20,
+    ) -> Result:
+        """Send random data for analysis.
+
+        Arguments:
+            shape: Shape of the image to be sent.
+            response_type: Type of response data.
+            data: Data to be added to the query.
+                Project will be able to access this under the `"data"` key in `context`.
+            timeout: Timeout in seconds for the analyze request.
+
+        Raises:
+            Exception: Same as [`Instance.analyze`][PekatVisionSDK.Instance.analyze]
+
+        Returns:
+            A tuple of image and `context`.
+                If `response_type` is `"context"`, then the returned image is `None`.
+        """
+        return self.analyze(
+            np.random.default_rng().integers(0, 256, shape, dtype=np.uint8),
+            response_type,
+            data,
+            timeout,
+        )
 
     def stop(self, timeout: float = 5) -> None:
         """Stop the project if it's running and not stopping already.
