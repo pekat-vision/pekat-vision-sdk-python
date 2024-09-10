@@ -4,6 +4,10 @@
 
 - Add `send_random` method to `Instance`. PR [#27](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/27) by [@Adamasterr](https://github.com/Adamasterr).
 
+### Changed
+
+- Create a random number generator in `__init__`. PR [#30](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/30) by [@Adamasterr](https://github.com/Adamasterr).
+
 ### Fixed
 
 - Fix `AttributeError` when stopping a remote `Instance / Analyzer`. PR [#26](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/26) by [@Adamasterr](https://github.com/Adamasterr)
