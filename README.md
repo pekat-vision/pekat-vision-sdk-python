@@ -8,7 +8,7 @@ Full SDK documentation available here: <https://pekat-vision.github.io/pekat-vis
 
 Type `pip install "pekat-vision-sdk"` into your terminal.
 
-Installing with `pip install "pekat-vision-sdk[opencv]"` also installs `opencv`.
+Installing with `pip install "pekat-vision-sdk[opencv]"` also installs [`opencv`](https://pypi.org/project/opencv-python/).
 
 ## Example
 
