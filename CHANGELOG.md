@@ -4,6 +4,10 @@
 
 - Add `send_random` method to `Instance`. PR [#27](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/27) by [@Adamasterr](https://github.com/Adamasterr).
 
+### Fixed
+
+- Fix `AttributeError` when stopping a remote `Instance / Analyzer`. PR [#26](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/26) by [@Adamasterr](https://github.com/Adamasterr)
+
 ## [2.0.0] - 2024-07-08
 
 _If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
