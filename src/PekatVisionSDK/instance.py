@@ -103,6 +103,8 @@ class Instance:
         self.process: Optional[subprocess.Popen] = None
         self.stop_key: Optional[str] = None
 
+        self._rng = np.random.default_rng()
+
         if port is None:
             self.port = self._find_free_ports()
             self.port_is_defined = False
@@ -400,7 +402,7 @@ class Instance:
                 If `response_type` is `"context"`, then the returned image is `None`.
         """
         return self.analyze(
-            np.random.default_rng().integers(0, 256, shape, dtype=np.uint8),
+            self._rng.integers(0, 256, shape, dtype=np.uint8),
             response_type,
             data,
             timeout,
