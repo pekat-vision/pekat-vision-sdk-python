@@ -2,7 +2,7 @@
 
 A Python module for communication with [PEKAT VISION](https://www.pekatvision.com/products/software/).
 
-Full documentation available here: <https://pekat-vision.github.io/pekat-vision-sdk-python>
+Full SDK documentation available here: <https://pekat-vision.github.io/pekat-vision-sdk-python>
 
 ## Installation
 
@@ -29,23 +29,24 @@ p_remote = Instance(port=8000, already_running=True)
 ### Sending an image to analyze
 
 ```python
-# Analyze image from disk
-
 import numpy as np
 
 # p = Instance(...)
+
+# Analyze image from disk
+
 result = p.analyze("path_to_image.png", response_type="annotated_image")
 
 # Analyze a numpy image
 
 # image: np.ndarray = ...
-p.analyze(image)
+result = p.analyze(image)
 ```
 
 ### Accessing the results
 
 ```python
-# Get the result data structure
+# Get the evaluation result (True/False)
 
 flow_result = result.context["result"]
 
