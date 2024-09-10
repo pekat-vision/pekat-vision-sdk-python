@@ -17,7 +17,7 @@ Installing with `pip install "pekat-vision-sdk[opencv]"` also installs [`opencv`
 ```python
 from PekatVisionSDK import Instance
 
-# Start a project locally
+# Start a project locally (host 0.0.0.0 - listen on all interfaces)
 
 p_local = Instance("~/PekatVisionProjects/my_project", port=8100, host="0.0.0.0")
 
