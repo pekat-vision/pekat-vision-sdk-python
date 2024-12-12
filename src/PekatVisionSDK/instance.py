@@ -412,7 +412,7 @@ class Instance:
         """Stop the project if it's running and not stopping already.
 
         It can only stop the project if [`already_running`][PekatVisionSDK.Instance]
-        was set to `True`.
+        was set to `False`.
 
         Arguments:
             timeout: Timeout in seconds to kill process.
