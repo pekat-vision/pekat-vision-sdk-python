@@ -19,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = ["numpy", "requests", "packaging"]
+dependencies = ["numpy", "requests", "packaging", "netifaces2"]
 
 [project.optional-dependencies]
 opencv = ["opencv-python"]
@@ -60,6 +60,8 @@ dependencies = [
     "black",
     "ruff",
     "mypy",
+    "netifaces2",
+    "rich",
 ]
 
 [tool.hatch.envs.docs]

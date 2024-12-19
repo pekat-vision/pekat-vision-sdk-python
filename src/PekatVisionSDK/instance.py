@@ -10,9 +10,11 @@ import socket
 import string
 import subprocess
 import sys
+from multiprocessing import shared_memory
 from pathlib import Path
-from typing import Literal, Optional, Tuple, Union, get_args
+from typing import Any, List, Literal, Optional, Tuple, Union, get_args
 
+import netifaces
 import numpy as np
 import requests
 from numpy.typing import NDArray
@@ -32,9 +34,24 @@ from .result import Result
 
 StrOrPathLike = Union[str, os.PathLike]
 ResponseType = Literal["context", "image", "annotated_image", "heatmap"]
-UrlEndpoint = Literal["analyze_image", "analyze_raw_image"]
+UrlEndpoint = Literal[
+    "analyze_image",
+    "analyze_raw_image",
+    "analyze_image_shared_memory",
+]
 
 ALLOWED_RESPONSE_TYPES = get_args(ResponseType)
+
+
+def _get_local_addressses() -> List[str]:
+    return [
+        addr["addr"]
+        for interface in netifaces.interfaces()
+        for addr in netifaces.ifaddresses(interface).get(
+            netifaces.InterfaceType.AF_INET,
+            [],
+        )
+    ]
 
 
 class Instance:
@@ -120,6 +137,16 @@ class Instance:
             self.ping()
 
         self.__stopping = False
+
+        self._shm = shared_memory.SharedMemory(create=True, size=1)
+        atexit.register(self._shm.close)
+        self._shm_arr = np.ndarray((1,), dtype=np.uint8, buffer=self._shm.buf)
+
+        self._is_local = self.host in [
+            *_get_local_addressses(),
+            "127.0.0.1",
+            "localhost",
+        ]
 
     def _get_dist_path(self) -> Path:
         if self.dist_path:
@@ -235,7 +262,7 @@ class Instance:
         self,
         path: UrlEndpoint,
         response_type: ResponseType,
-        **kwargs,
+        **kwargs: Dict[str, Any],
     ) -> str:
         url = f"http://{self.host}:{self.port}/{path}?response_type={response_type}"
 
@@ -294,6 +321,49 @@ class Instance:
             url,
             data=image.tobytes(),
             headers={"Content-Type": "application/octet-stream"},
+            timeout=timeout,
+        )
+
+        return self._response_to_result(response, response_type)
+
+    def _analyze_numpy_shm(
+        self,
+        image: NDArray[np.uint8],
+        response_type: ResponseType,
+        data: Optional[str] = None,
+        timeout: float = 20,
+    ) -> Result:
+        """Send the numpy array through a shared memory to the running project and get the results.
+
+        This method will run if the project is running locally.
+        """
+        (height, width), channels = (
+            image.shape[:2],
+            image.shape[2] if len(image.shape) == 3 else 1,
+        )
+
+        if image.nbytes != self._shm.size:
+            self._shm.close()
+            self._shm = shared_memory.SharedMemory(create=True, size=image.nbytes)
+            self._shm_arr = np.ndarray(
+                image.shape,
+                dtype=image.dtype,
+                buffer=self._shm.buf,
+            )
+        self._shm_arr[:] = image[:]
+
+        url = self._construct_url(
+            "analyze_image_shared_memory",
+            response_type,
+            data=data,
+            height=height,
+            width=width,
+            channels=channels,
+            name=self._shm.name,
+        )
+
+        response = requests.post(
+            url,
             timeout=timeout,
         )
 
@@ -374,6 +444,8 @@ class Instance:
         if isinstance(image, bytes):
             return self._analyze_bytes(image, response_type, data, timeout)
         if isinstance(image, np.ndarray):
+            if self._is_local:
+                return self._analyze_numpy_shm(image, response_type, data, timeout)
             return self._analyze_numpy(image, response_type, data, timeout)
 
         raise InvalidDataTypeError(type(image))
