@@ -337,10 +337,7 @@ class Instance:
 
         This method will run if the project is running locally.
         """
-        (height, width), channels = (
-            image.shape[:2],
-            image.shape[2] if len(image.shape) == 3 else 1,
-        )
+        height, width = image.shape[:2]
 
         if self._shm_arr.shape != image.shape:
             self._shm.close()
@@ -358,7 +355,6 @@ class Instance:
             data=data,
             height=height,
             width=width,
-            channels=channels,
             name=self._shm.name,
         )
 
