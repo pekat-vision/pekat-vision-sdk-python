@@ -10,6 +10,7 @@ import socket
 import string
 import subprocess
 import sys
+from functools import cached_property
 from multiprocessing import shared_memory
 from pathlib import Path
 from typing import Any, List, Literal, Optional, Tuple, Union, get_args
@@ -147,6 +148,18 @@ class Instance:
             "127.0.0.1",
             "localhost",
         ]
+
+    @cached_property
+    def server_version(self) -> version.Version:
+        """Get the version of the PEKAT VISION server."""
+        url = f"http://{self.host}:{self.port}/version"
+        response = requests.get(url, timeout=20)
+        return version.parse(response.text)
+
+    @cached_property
+    def _can_use_shm(self) -> bool:
+        """Check if shared memory analysis is supported."""
+        return self._is_local and self.server_version >= version.parse("3.18.0")
 
     def _get_dist_path(self) -> Path:
         if self.dist_path:
@@ -440,7 +453,7 @@ class Instance:
         if isinstance(image, bytes):
             return self._analyze_bytes(image, response_type, data, timeout)
         if isinstance(image, np.ndarray):
-            if self._is_local:
+            if self._can_use_shm:
                 return self._analyze_numpy_shm(image, response_type, data, timeout)
             return self._analyze_numpy(image, response_type, data, timeout)
 
