@@ -342,7 +342,7 @@ class Instance:
             image.shape[2] if len(image.shape) == 3 else 1,
         )
 
-        if image.nbytes != self._shm.size:
+        if self._shm_arr.shape != image.shape:
             self._shm.close()
             self._shm = shared_memory.SharedMemory(create=True, size=image.nbytes)
             self._shm_arr = np.ndarray(
