@@ -275,7 +275,7 @@ class Instance:
         self,
         path: UrlEndpoint,
         response_type: ResponseType,
-        **kwargs: Dict[str, Any],
+        **kwargs: Any,  # noqa: ANN401
     ) -> str:
         url = f"http://{self.host}:{self.port}/{path}?response_type={response_type}"
 
