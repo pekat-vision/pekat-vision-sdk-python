@@ -1,5 +1,9 @@
 # Changelog
 
+### Changed
+
+- Use shared memory for analyzing locally. PR [#33](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/33) by [@Adamasterr](https://github.com/Adamasterr).
+
 ## [2.1.0] - 2024-10-08
 
 ### Added
