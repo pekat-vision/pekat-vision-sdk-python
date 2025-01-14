@@ -1,5 +1,7 @@
 # Changelog
 
+## [2.2.0] - 2024-10-08
+
 ### Changed
 
 - Use shared memory for analyzing locally. PR [#33](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/33) by [@Adamasterr](https://github.com/Adamasterr).
@@ -49,5 +51,6 @@ _If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
 - Fix `Instance(already_running=False)` not searching default install dir on Linux.
 - Fix project path not accepting `~` as a home directory.
 
-[2.1.0]: https://github.com/pekat-vision/pekat-vision-sdk-python/releases/tag/v2.0.0
+[2.2.0]: https://github.com/pekat-vision/pekat-vision-sdk-python/releases/tag/v2.2.0
+[2.1.0]: https://github.com/pekat-vision/pekat-vision-sdk-python/releases/tag/v2.1.0
 [2.0.0]: https://github.com/pekat-vision/pekat-vision-sdk-python/releases/tag/v2.0.0
