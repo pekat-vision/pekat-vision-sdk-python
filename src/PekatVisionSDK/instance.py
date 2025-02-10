@@ -118,6 +118,8 @@ class Instance:
         self.wait_for_init_model = wait_for_init_model
         self.gpu = gpu
 
+        self.session = requests.Session()  # Session for all requests
+
         self.process: Optional[subprocess.Popen] = None
         self.stop_key: Optional[str] = None
 
@@ -153,7 +155,7 @@ class Instance:
     def server_version(self) -> version.Version:
         """Get the version of the PEKAT VISION server."""
         url = f"http://{self.host}:{self.port}/version"
-        response = requests.get(url, timeout=20)
+        response = self.session.get(url, timeout=20)
         return version.parse(response.text)
 
     @cached_property
@@ -330,7 +332,7 @@ class Instance:
             width=width,
         )
 
-        response = requests.post(
+        response = self.session.post(
             url,
             data=image.tobytes(),
             headers={"Content-Type": "application/octet-stream"},
@@ -371,7 +373,7 @@ class Instance:
             name=self._shm.name,
         )
 
-        response = requests.post(
+        response = self.session.post(
             url,
             timeout=timeout,
         )
@@ -392,7 +394,7 @@ class Instance:
             data=data,
         )
 
-        response = requests.post(
+        response = self.session.post(
             url,
             data=image,
             headers={"Content-Type": "application/octet-stream"},
@@ -508,7 +510,7 @@ class Instance:
         self.__stopping = True
 
         try:
-            requests.get(
+            self.session.get(
                 url=f"http://{self.host}:{self.port}/stop?key={self.stop_key}",
                 timeout=timeout,
             )
@@ -528,7 +530,7 @@ class Instance:
             Ping response.
         """
         try:
-            return requests.get(
+            return self.session.get(
                 url=f"http://{self.host}:{self.port}/ping",
                 timeout=timeout,
             )
