@@ -1,5 +1,9 @@
 # Changelog
 
+### Changed
+
+- Use requests.Session for improved performance in Instance class. PR [#34](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/34) by [@pololanik](https://github.com/pololanik).
+
 ## [2.2.0] - 2025-01-14
 
 ### Changed
