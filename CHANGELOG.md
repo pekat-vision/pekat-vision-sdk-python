@@ -2,7 +2,7 @@
 
 ### Fixed
 
-- fix: add try catch around version parse. PR [#38](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/38) by [@ondrej-from-pekat](https://github.com/ondrej-from-pekat).
+- Add try catch around version parse. PR [#38](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/38) by [@ondrej-from-pekat](https://github.com/ondrej-from-pekat).
 
 ## [2.3.0] - 2025-02-24
 
