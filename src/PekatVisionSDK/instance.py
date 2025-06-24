@@ -134,7 +134,6 @@ class Instance:
 
         if not already_running:
             self._start_instance()
-            atexit.register(self.stop)
 
         if ping:
             self.ping()
@@ -151,6 +150,8 @@ class Instance:
         ]
 
     def __del__(self):
+        if not self.already_running:
+            atexit.register(self.stop)
         atexit.register(self._shm.close)
 
     @cached_property
