@@ -1,6 +1,5 @@
 """Python module for communication with PEKAT VISION 3.10.2 and higher."""
 
-import atexit
 import base64
 import json
 import os
@@ -151,8 +150,8 @@ class Instance:
 
     def __del__(self):
         if not self.already_running:
-            atexit.register(self.stop)
-        atexit.register(self._shm.close)
+            self.stop()
+        self._shm.close()
 
     @cached_property
     def server_version(self) -> version.Version:
