@@ -155,7 +155,10 @@ class Instance:
 
     @cached_property
     def server_version(self) -> version.Version:
-        """Get the version of the PEKAT VISION server."""
+        """Get the version of the PEKAT VISION server.
+
+        Returns `Version("0.0.0")` if PEKAT VISION server's version is < 3.18.0.
+        """
         url = f"http://{self.host}:{self.port}/version"
         response = self.session.get(url, timeout=20)
         try:
