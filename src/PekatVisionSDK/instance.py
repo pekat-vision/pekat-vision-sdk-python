@@ -156,7 +156,10 @@ class Instance:
         """Get the version of the PEKAT VISION server."""
         url = f"http://{self.host}:{self.port}/version"
         response = self.session.get(url, timeout=20)
-        return version.parse(response.text)
+        try:
+            return version.parse(response.text)
+        except version.InvalidVersion:
+            return version.Version("0.0.0")
 
     @cached_property
     def _can_use_shm(self) -> bool:
