@@ -1,6 +1,5 @@
 """Python module for communication with PEKAT VISION 3.10.2 and higher."""
 
-import atexit
 import base64
 import json
 import os
@@ -134,7 +133,6 @@ class Instance:
 
         if not already_running:
             self._start_instance()
-            atexit.register(self.stop)
 
         if ping:
             self.ping()
@@ -142,7 +140,6 @@ class Instance:
         self.__stopping = False
 
         self._shm = shared_memory.SharedMemory(create=True, size=1)
-        atexit.register(self._shm.close)
         self._shm_arr = np.ndarray((1,), dtype=np.uint8, buffer=self._shm.buf)
 
         self._is_local = self.host in [
@@ -150,6 +147,11 @@ class Instance:
             "127.0.0.1",
             "localhost",
         ]
+
+    def __del__(self):
+        if not self.already_running:
+            self.stop()
+        self._shm.close()
 
     @cached_property
     def server_version(self) -> version.Version:
