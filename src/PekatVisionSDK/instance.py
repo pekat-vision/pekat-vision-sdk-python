@@ -117,6 +117,9 @@ class Instance:
         self.wait_for_init_model = wait_for_init_model
         self.gpu = gpu
 
+        self._shm = shared_memory.SharedMemory(create=True, size=1)
+        self._shm_arr = np.ndarray((1,), dtype=np.uint8, buffer=self._shm.buf)
+
         self.session = requests.Session()  # Session for all requests
 
         self.process: Optional[subprocess.Popen] = None
@@ -138,9 +141,6 @@ class Instance:
             self.ping()
 
         self.__stopping = False
-
-        self._shm = shared_memory.SharedMemory(create=True, size=1)
-        self._shm_arr = np.ndarray((1,), dtype=np.uint8, buffer=self._shm.buf)
 
         self._is_local = self.host in [
             *_get_local_addressses(),
