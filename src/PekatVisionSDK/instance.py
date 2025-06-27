@@ -127,6 +127,13 @@ class Instance:
 
         self._rng = np.random.default_rng()
 
+        self.__stopping = False
+
+        self._is_local = self.host in [
+            *_get_local_addresses(),
+            "127.0.0.1",
+            "localhost",
+        ]
         if port is None:
             self.port = self._find_free_ports()
             self.port_is_defined = False
@@ -139,14 +146,6 @@ class Instance:
 
         if ping:
             self.ping()
-
-        self.__stopping = False
-
-        self._is_local = self.host in [
-            *_get_local_addresses(),
-            "127.0.0.1",
-            "localhost",
-        ]
 
     def __del__(self) -> None:
         if not self.already_running:
