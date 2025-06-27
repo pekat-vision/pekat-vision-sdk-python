@@ -1,5 +1,9 @@
 # Changelog
 
+### Fixed
+
+- Create attributes before an exception can be raised. PR [#42](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/42) by [@Adamasterr](https://github.com/Adamasterr).
+
 ## [2.3.1] - 2025-06-24
 
 ### Fixed
