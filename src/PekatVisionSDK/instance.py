@@ -43,7 +43,7 @@ UrlEndpoint = Literal[
 ALLOWED_RESPONSE_TYPES = get_args(ResponseType)
 
 
-def _get_local_addressses() -> List[str]:
+def _get_local_addresses() -> List[str]:
     return [
         addr["addr"]
         for interface in netifaces.interfaces()
@@ -143,7 +143,7 @@ class Instance:
         self.__stopping = False
 
         self._is_local = self.host in [
-            *_get_local_addressses(),
+            *_get_local_addresses(),
             "127.0.0.1",
             "localhost",
         ]
