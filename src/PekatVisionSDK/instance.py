@@ -148,7 +148,7 @@ class Instance:
             "localhost",
         ]
 
-    def __del__(self):
+    def __del__(self) -> None:
         if not self.already_running:
             self.stop()
         self._shm.close()
