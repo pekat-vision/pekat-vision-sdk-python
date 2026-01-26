@@ -73,12 +73,18 @@ serve = "mkdocs serve"
 build = "mkdocs build"
 deploy = "mkdocs gh-deploy --strict"
 
+[tool.ruff]
+target-version = "py38"
+
 [tool.ruff.format]
 quote-style = "double"
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = ["D105", "D107", "E501"]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
