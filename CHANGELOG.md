@@ -1,5 +1,9 @@
 # Changelog
 
+### Fixed
+
+- Include program output in error message. PR [#43](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/43) by [@Adamasterr](https://github.com/Adamasterr).
+
 ## [2.3.2] - 2025-06-27
 
 ### Fixed
