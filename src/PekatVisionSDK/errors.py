@@ -1,6 +1,7 @@
 """Module with all the custom errors."""
 
 from pathlib import Path
+from typing import Any, List
 
 
 class DistNotFoundError(Exception):
@@ -19,7 +20,7 @@ class DistNotFoundError(Exception):
 class DistNotExistsError(Exception):
     """Raised when PEKAT VISION does not exist in the specified path."""
 
-    def __init__(self, path: Path, *args: tuple) -> None:
+    def __init__(self, path: Path, *args: Any) -> None:
         super().__init__(*args)
         self.path = path
 
@@ -30,7 +31,7 @@ class DistNotExistsError(Exception):
 class PortIsAllocatedError(Exception):
     """Raised when the specified port is already used by another process."""
 
-    def __init__(self, port: int, *args: tuple) -> None:
+    def __init__(self, port: int, *args: Any) -> None:
         super().__init__(*args)
         self.port = port
 
@@ -41,7 +42,7 @@ class PortIsAllocatedError(Exception):
 class InvalidDataTypeError(Exception):
     """Raised when the input data is not a file path, bytes or a [numpy array](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html)."""
 
-    def __init__(self, type_: type, *args: tuple) -> None:
+    def __init__(self, type_: type, *args: Any) -> None:
         super().__init__(*args)
         self.type_ = type_
 
@@ -52,7 +53,7 @@ class InvalidDataTypeError(Exception):
 class InvalidResponseTypeError(Exception):
     """Raised when the response type is invalid."""
 
-    def __init__(self, response_type: str, *args: tuple) -> None:
+    def __init__(self, response_type: str, *args: Any) -> None:
         super().__init__(*args)
         self.response_type = response_type
 
@@ -63,7 +64,7 @@ class InvalidResponseTypeError(Exception):
 class ProjectNotFoundError(Exception):
     """Raised when the project was not found in the specified location."""
 
-    def __init__(self, path: Path, *args: tuple) -> None:
+    def __init__(self, path: Path, *args: Any) -> None:
         super().__init__(*args)
         self.path = path
 
@@ -74,8 +75,12 @@ class ProjectNotFoundError(Exception):
 class PekatNotStartedError(Exception):
     """Raised when [`Instance`][PekatVisionSDK.Instance] couldn't start a project."""
 
+    def __init__(self, output: List[str], *args: Any) -> None:
+        super().__init__(*args)
+        self.output = output
+
     def __str__(self) -> str:
-        return "Pekat not started from unknown reason"
+        return f"Pekat not started from unknown reason.\n{''.join(self.output)}"
 
 
 class OpenCVImportError(Exception):

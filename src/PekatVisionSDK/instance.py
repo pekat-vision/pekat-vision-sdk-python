@@ -258,9 +258,11 @@ class Instance:
             msg = "Process stdout is None"
             raise RuntimeError(msg)
 
+        lines: List[str] = []
         # wait for start
         while True:
             next_line = self.process.stdout.readline().decode()  # type: ignore[union-attr]
+            lines.append(next_line)
             if next_line == "" and self.process.poll() is not None:
                 break
             sys.stdout.flush()
@@ -278,7 +280,7 @@ class Instance:
                 self.port = self._find_free_ports()
                 return self._start_instance()
 
-        raise PekatNotStartedError
+        raise PekatNotStartedError(lines)
 
     def _construct_url(
         self,
