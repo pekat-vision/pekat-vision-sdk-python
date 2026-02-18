@@ -1,5 +1,9 @@
 # Changelog
 
+### Changed
+
+- Set context_in_body to True by default. PR [#44](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/44) by [@Adamasterr](https://github.com/Adamasterr).
+
 ### Fixed
 
 - Include program output in error message. PR [#43](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/43) by [@Adamasterr](https://github.com/Adamasterr).
