@@ -67,7 +67,7 @@ class Instance:
         already_running: bool = False,
         disable_code: bool = False,
         tutorial_only: bool = False,
-        context_in_body: bool = False,
+        context_in_body: bool = True,
         wait_for_init_model: bool = False,
         ping: bool = True,
         gpu: int = 0,
@@ -89,7 +89,7 @@ class Instance:
             tutorial_only: Only allow Anomaly module and force tutorial.
                 Ignored if `already_running` is `True`.
             context_in_body: Whether to send the `context` `dict`  in the response body.
-                Set to `True` if the resulting context is larger than 4KB.
+                Set to `False` if context should be sent in a header, must be < 4KB.
             wait_for_init_model: Whether to wait for all models to be initialized before returning the [Instance][PekatVisionSDK.Instance] object.
                 Ignored if `already_running` is `True`.
             ping: Whether to send a ping request to `HOST:PORT/ping` upon creating
