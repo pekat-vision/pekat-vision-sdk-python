@@ -11,6 +11,20 @@ from typing import Literal, Optional
 from pydantic import BaseModel, ConfigDict
 
 
+class Context(BaseModel):
+    """Abstract class for context from image analysis.
+
+    This class represents context that will be returned when processing
+    is set to OFF in the target project.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    error: bool
+    imageShape: ImageShape
+    processingTime: float
+    save: bool
+
 class Position(BaseModel):
     """Class representing the position of a detected object."""
 
@@ -25,7 +39,7 @@ class ImageShape(BaseModel):
     width: int
 
 
-class BareContext(BaseModel):
+class BareContext(Context):
     """Class representing bare context.
 
     This class represents context that will be returned when processing
@@ -34,11 +48,7 @@ class BareContext(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    error: bool
-    imageShape: ImageShape
     processing: Literal[False]
-    processingTime: float
-    save: bool
 
 
 class ModuleType(StrEnum):
@@ -104,7 +114,7 @@ class DetectedLine(BaseModel):
     percent: bool
 
 
-class FullContext(BareContext):
+class FullContext(Context):
     """Class representing full context.
 
     This class represents context that will be returned when processing
