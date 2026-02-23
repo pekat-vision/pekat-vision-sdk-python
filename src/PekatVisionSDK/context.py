@@ -69,7 +69,7 @@ class RectangleSource(BaseModel):
     type: ModuleType
 
 
-class DetectedRectangle(BaseModel, Position):
+class DetectedRectangle(Position):
     """Class representing single detected rectangle."""
 
     # Positional info
