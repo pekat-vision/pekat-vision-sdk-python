@@ -40,7 +40,7 @@ packages = ["src/PekatVisionSDK"]
 packages = ["src/PekatVisionSDK"]
 
 [tool.hatch.envs.test]
-dependencies = ["pytest", "requests", "numpy", "packaging"]
+dependencies = ["pytest", "numpy", "requests", "packaging", "psutil"]
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:test}"
