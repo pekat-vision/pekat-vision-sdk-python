@@ -6,6 +6,7 @@
 
 ### Fixed
 
+- Replace netifaces with psutil for network address retrieval. PR [#46](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/46) by [@Adamasterr](https://github.com/Adamasterr).
 - Include program output in error message. PR [#43](https://github.com/pekat-vision/pekat-vision-sdk-python/pull/43) by [@Adamasterr](https://github.com/Adamasterr).
 
 ## [2.3.2] - 2025-06-27
