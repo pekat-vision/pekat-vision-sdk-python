@@ -19,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = ["numpy", "requests", "packaging", "netifaces2"]
+dependencies = ["numpy", "requests", "packaging", "psutil"]
 
 [project.optional-dependencies]
 opencv = ["opencv-python"]
@@ -40,7 +40,7 @@ packages = ["src/PekatVisionSDK"]
 packages = ["src/PekatVisionSDK"]
 
 [tool.hatch.envs.test]
-dependencies = ["pytest", "requests", "numpy", "packaging"]
+dependencies = ["pytest", "numpy", "requests", "packaging", "psutil"]
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:test}"
@@ -60,7 +60,7 @@ dependencies = [
     "black",
     "ruff",
     "mypy",
-    "netifaces2",
+    "psutil",
     "rich",
 ]
 

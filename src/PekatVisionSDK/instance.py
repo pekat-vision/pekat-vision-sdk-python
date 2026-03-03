@@ -14,8 +14,8 @@ from multiprocessing import shared_memory
 from pathlib import Path
 from typing import Any, List, Literal, Optional, Tuple, Union, get_args
 
-import netifaces
 import numpy as np
+import psutil
 import requests
 from numpy.typing import NDArray
 from packaging import version
@@ -45,12 +45,10 @@ ALLOWED_RESPONSE_TYPES = get_args(ResponseType)
 
 def _get_local_addresses() -> List[str]:
     return [
-        addr["addr"]
-        for interface in netifaces.interfaces()
-        for addr in netifaces.ifaddresses(interface).get(
-            netifaces.InterfaceType.AF_INET,
-            [],
-        )
+        addr.address
+        for iface_addrs in psutil.net_if_addrs().values()
+        for addr in iface_addrs
+        if addr.family == socket.AF_INET
     ]
 
 
