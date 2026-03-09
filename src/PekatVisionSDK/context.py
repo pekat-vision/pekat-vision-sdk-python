@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Literal, NotRequired, TypedDict
+from typing import NotRequired, TypedDict
 
 
 class Context(TypedDict):
