@@ -1,38 +1,31 @@
-# ruff: noqa: N815
-
-
 """Module holding utility functions for working with Context."""
 
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Literal, Optional
-
-from pydantic import BaseModel, ConfigDict
+from typing import Literal, NotRequired, TypedDict
 
 
-class Context(BaseModel):
+class Context(TypedDict):
     """Abstract class for context from image analysis.
 
     This class represents context that will be returned when processing
     is set to OFF in the target project.
     """
 
-    model_config = ConfigDict(extra="forbid")
-
     error: bool
     imageShape: ImageShape
     processingTime: float
     save: bool
 
-class Position(BaseModel):
+class Position(TypedDict):
     """Class representing the position of a detected object."""
 
     x: int | float
     y: int | float
 
 
-class ImageShape(BaseModel):
+class ImageShape(TypedDict):
     """Class representing the shape of an image."""
 
     height: int
@@ -45,8 +38,6 @@ class BareContext(Context):
     This class represents context that will be returned when processing
     is set to OFF in the target project.
     """
-
-    model_config = ConfigDict(extra="forbid")
 
     processing: Literal[False]
 
@@ -61,17 +52,17 @@ class ModuleType(StrEnum):
     CODE = "CODE"
 
 
-class ClassName(BaseModel):
+class ClassName(TypedDict):
     """Class representing single className."""
 
     id: int
     confidence: int
     label: str
-    color: Optional[str] = None
-    color_bgr: Optional[list[int]] = None
+    color: NotRequired[str]
+    color_bgr: NotRequired[list[int]]
 
 
-class RectangleSource(BaseModel):
+class RectangleSource(TypedDict):
     """Class representing information about source module of a detected rectangle."""
 
     modelId: int
@@ -86,7 +77,7 @@ class DetectedRectangle(Position):
     width: int | float
     height: int | float
     rotate: float
-    area: Optional[float] = None
+    area: NotRequired[float]
 
     # Detection info
     classNames: list[ClassName]
@@ -97,7 +88,7 @@ class DetectedRectangle(Position):
     source: RectangleSource
 
 
-class DetectedLine(BaseModel):
+class DetectedLine(TypedDict):
     """Class represented line detected using Measure tool."""
 
     # Positional info
@@ -122,7 +113,6 @@ class FullContext(Context):
     """
 
     # Change from BareContext
-    model_config = ConfigDict(extra="allow")
     processing: Literal[True]
 
     # Inputs
