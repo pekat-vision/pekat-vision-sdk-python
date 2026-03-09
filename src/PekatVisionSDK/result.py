@@ -5,6 +5,7 @@ from typing import NamedTuple, Optional
 import numpy as np
 from numpy.typing import NDArray
 
+from .context import Context
 from .errors import OpenCVImportError
 
 
@@ -17,7 +18,7 @@ class Result(NamedTuple):
     """
 
     image_bytes: Optional[bytes]
-    context: dict
+    context: Context
 
     def get_decoded_image(self) -> NDArray[np.uint8]:
         """Get the decoded image.
