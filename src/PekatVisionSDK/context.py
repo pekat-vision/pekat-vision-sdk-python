@@ -17,6 +17,7 @@ class Context(TypedDict):
     imageShape: ImageShape
     processingTime: float
     save: bool
+    processing: bool
 
 class Position(TypedDict):
     """Class representing the position of a detected object."""
@@ -30,16 +31,6 @@ class ImageShape(TypedDict):
 
     height: int
     width: int
-
-
-class BareContext(Context):
-    """Class representing bare context.
-
-    This class represents context that will be returned when processing
-    is set to OFF in the target project.
-    """
-
-    processing: Literal[False]
 
 
 class ModuleType(StrEnum):
@@ -111,9 +102,6 @@ class FullContext(Context):
     This class represents context that will be returned when processing
     is set to ON in the target project.
     """
-
-    # Change from BareContext
-    processing: Literal[True]
 
     # Inputs
     data: str
