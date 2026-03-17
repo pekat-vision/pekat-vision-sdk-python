@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "A Python module for communication with PEKAT VISION"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [{ email = "developers@pekatvision.com" }]
 maintainers = [{ email = "developers@pekatvision.com" }]
 keywords = ["pekat", "pekatvision", "pekatvisionsdk", "vision", "sdk"]
@@ -16,10 +16,14 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3 :: Only",
 ]
-dependencies = ["numpy", "requests", "packaging", "netifaces2"]
+dependencies = [
+    "numpy",
+    "requests",
+    "packaging",
+    "netifaces2",
+    "typing-extensions",
+]
 
 [project.optional-dependencies]
 opencv = ["opencv-python"]
@@ -40,7 +44,7 @@ packages = ["src/PekatVisionSDK"]
 packages = ["src/PekatVisionSDK"]
 
 [tool.hatch.envs.test]
-dependencies = ["pytest", "requests", "numpy", "packaging"]
+dependencies = ["pytest", "requests", "numpy", "packaging", "typing-extensions"]
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:test}"
@@ -49,7 +53,7 @@ test = "pytest {args:test}"
 description = "Full development environment."
 type = "virtual"
 path = ".venv"
-python = "3.8"
+python = "3.10"
 dependencies = [
     "requests",
     "numpy",
@@ -62,6 +66,7 @@ dependencies = [
     "mypy",
     "netifaces2",
     "rich",
+    "typing-extensions"
 ]
 
 [tool.hatch.envs.docs]
@@ -74,7 +79,7 @@ build = "mkdocs build"
 deploy = "mkdocs gh-deploy --strict"
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.format]
 quote-style = "double"
