@@ -3,29 +3,31 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict, cast
-import numpy as np
-from numpy.typing import NDArray
+
 from .errors import OpenCVImportError
 
 if TYPE_CHECKING:
+    import numpy as np
+    from numpy.typing import NDArray
+
     from PekatVisionSDK import context
 
 
 class FilterParams(TypedDict, total=False):
     """Parameters for filtering rectangles."""
 
-    min_x: int | None
-    max_x: int | None
-    min_y: int | None
-    max_y: int | None
-    min_width: int | None
-    max_width: int | None
-    min_height: int | None
-    max_height: int | None
-    min_area: int | None
-    max_area: int | None
-    min_confidence: float | None
-    max_confidence: float | None
+    min_x: int
+    max_x: int
+    min_y: int
+    max_y: int
+    min_width: int
+    max_width: int
+    min_height: int
+    max_height: int
+    min_area: int
+    max_area: int
+    min_confidence: float
+    max_confidence: float
 
 
 def filter_rectangles(
@@ -39,10 +41,10 @@ def filter_rectangles(
     The function returns empty list if it's not a full context.
 
     Arguments:
-        provided_context (context.Context): Context from Instance.analyze to be filtered.
-        filters (FilterParams): Filter parameters.
-        modules (list | set): List or set of modules to filter by.
-        labels (list | set): List of labels to filter by.
+        provided_context: Context from Instance.analyze to be filtered.
+        filters: Filter parameters.
+        modules: List or set of modules to filter by.
+        labels: List of labels to filter by.
 
     Returns:
         lict[context.DetectedRectangle]: Filtered list of detected rectangles.
@@ -70,13 +72,14 @@ def filter_function(
     """Filter function for rectangles.
 
     Arguments:
-        rectangle (context.DetectedRectangle): Rectangle to be filtered.
-        filters (FilterParams): Filter parameters.
-        modules (list | set): List or set of modules to filter by.
-        labels (list | set): List or set of labels to filter by.
+        rectangle: Rectangle to be filtered.
+        filters: Filter parameters.
+        modules: List or set of modules to filter by.
+        labels: List or set of labels to filter by.
 
     Returns:
-        bool: True if rectangle passes the filter, False otherwise."""
+        bool: True if rectangle passes the filter, False otherwise.
+    """
     return (
         _check_bounds(rectangle["x"], filters.get("min_x"), filters.get("max_x"))
         and _check_bounds(rectangle["y"], filters.get("min_y"), filters.get("max_y"))
@@ -138,10 +141,10 @@ def draw_rectangles(
     """Draw rectangles on image based on provided context.
 
     Arguments:
-        image (NDArray[np.uint8]): Image to draw rectangles on.
-        provided_context (context.Context): Context from Instance.analyze to be drawn.
-        color (tuple[int, int, int], optional): Color of the rectangles. Defaults to (0, 0, 255).
-        thickness (int, optional): Thickness of the rectangles. Defaults to 2.
+        image: Image to draw rectangles on.
+        provided_context: Context from Instance.analyze to be drawn.
+        color: Color of the rectangles. Defaults to (0, 0, 255).
+        thickness: Thickness of the rectangles. Defaults to 2.
 
     Raises:
         OpenCVImportError: If OpenCV is not installed.
