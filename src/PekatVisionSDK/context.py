@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
+from enum import Enum
 from typing import TypedDict
 
 from typing_extensions import NotRequired
@@ -36,7 +36,7 @@ class ImageShape(TypedDict):
     width: int
 
 
-class ModuleType(StrEnum):
+class ModuleType(str, Enum):
     """Enum representing different module types."""
 
     UNSUPERVISED = "UNSUPERVISED"

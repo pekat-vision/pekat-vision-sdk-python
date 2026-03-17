@@ -12,7 +12,7 @@ import sys
 from functools import cached_property
 from multiprocessing import shared_memory
 from pathlib import Path
-from typing import Any, List, Literal, Optional, Tuple, Union, cast, get_args, overload
+from typing import Any, Literal, get_args
 
 import numpy as np
 import psutil
@@ -30,9 +30,9 @@ from .errors import (
     PortIsAllocatedError,
     ProjectNotFoundError,
 )
-from .result import Result, TypedResult, _BaseResult
+from .result import Result
 
-StrOrPathLike = Union[str, os.PathLike]
+StrOrPathLike = str | os.PathLike
 ResponseType = Literal["context", "image", "annotated_image", "heatmap"]
 UrlEndpoint = Literal[
     "analyze_image",
@@ -43,7 +43,7 @@ UrlEndpoint = Literal[
 ALLOWED_RESPONSE_TYPES = get_args(ResponseType)
 
 
-def _get_local_addresses() -> List[str]:
+def _get_local_addresses() -> list[str]:
     return [
         addr.address
         for iface_addrs in psutil.net_if_addrs().values()
@@ -57,9 +57,9 @@ class Instance:
 
     def __init__(
         self,
-        project_path: Optional[StrOrPathLike] = None,
-        dist_path: Optional[StrOrPathLike] = None,
-        port: Optional[int] = None,
+        project_path: StrOrPathLike | None = None,
+        dist_path: StrOrPathLike | None = None,
+        port: int | None = None,
         host: str = "127.0.0.1",
         *,
         already_running: bool = False,
@@ -120,8 +120,8 @@ class Instance:
 
         self.session = requests.Session()  # Session for all requests
 
-        self.process: Optional[subprocess.Popen] = None
-        self.stop_key: Optional[str] = None
+        self.process: subprocess.Popen | None = None
+        self.stop_key: str | None = None
 
         self._rng = np.random.default_rng()
 
@@ -256,7 +256,7 @@ class Instance:
             msg = "Process stdout is None"
             raise RuntimeError(msg)
 
-        lines: List[str] = []
+        lines: list[str] = []
         # wait for start
         while True:
             next_line = self.process.stdout.readline().decode()  # type: ignore[union-attr]
@@ -284,7 +284,7 @@ class Instance:
         self,
         path: UrlEndpoint,
         response_type: ResponseType,
-        **kwargs: Any,  # noqa: ANN401
+        **kwargs: Any,
     ) -> str:
         url = f"http://{self.host}:{self.port}/{path}?response_type={response_type}"
 
@@ -326,7 +326,7 @@ class Instance:
         self,
         image: NDArray[np.uint8],
         response_type: ResponseType,
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
     ) -> Result:
         """Send numpy array to the running project and get the results."""
@@ -352,7 +352,7 @@ class Instance:
         self,
         image: NDArray[np.uint8],
         response_type: ResponseType,
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
     ) -> Result:
         """Send the numpy array through a shared memory to the running project and get the results.
@@ -391,7 +391,7 @@ class Instance:
         self,
         image: bytes,
         response_type: ResponseType,
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
     ) -> Result:
         """Send bytes to the running project and get the results."""
@@ -414,42 +414,19 @@ class Instance:
         self,
         image: Path,
         response_type: ResponseType,
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
     ) -> Result:
         """Send bytes from a file to the running project and get the results."""
         return self._analyze_bytes(image.read_bytes(), response_type, data, timeout)
 
-    @overload
     def analyze(
         self,
-        image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
+        image: NDArray[np.uint8] | bytes | StrOrPathLike,
         response_type: ResponseType = "context",
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
-        *,
-        typing: Literal["untyped"],
-    ) -> Result: ...
-
-    @overload
-    def analyze(
-        self,
-        image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
-        response_type: ResponseType = "context",
-        data: Optional[str] = None,
-        timeout: float = 20,
-        *,
-        typing: Literal["typed"] = "typed",
-    ) -> TypedResult: ...
-
-    def analyze(
-        self,
-        image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
-        response_type: ResponseType = "context",
-        data: Optional[str] = None,
-        timeout: float = 20,
-        typing: Literal["typed", "untyped"] = "typed",
-    ) -> _BaseResult:
+    ) -> Result:
         """Send an image to the running project and get the results.
 
         `response_type` will affect the `image` of the returned [`Result`][PekatVisionSDK.Result]:
@@ -467,7 +444,6 @@ class Instance:
             data: Data to be added to the query.
                 Project will be able to access this under the `"data"` key in `context`.
             timeout: Timeout in seconds for the analyze request.
-            typing: Whether to return a typed or untyped result.
 
         Raises:
             InvalidResponseTypeError: If `response_type` is not any of the allowed response types.
@@ -495,17 +471,15 @@ class Instance:
 
         if result is None:
             raise InvalidDataTypeError(type(image))
-        if typing == "typed":
-            return cast("TypedResult", result)
-        return cast("Result", result)
+        return result
 
     def send_random(
         self,
-        shape: Tuple[int, ...] = (512, 512, 3),
+        shape: tuple[int, ...] = (512, 512, 3),
         response_type: ResponseType = "context",
-        data: Optional[str] = None,
+        data: str | None = None,
         timeout: float = 20,
-    ) -> TypedResult:
+    ) -> Result:
         """Send random data for analysis.
 
         Arguments:

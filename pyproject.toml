@@ -45,7 +45,14 @@ packages = ["src/PekatVisionSDK"]
 packages = ["src/PekatVisionSDK"]
 
 [tool.hatch.envs.test]
-dependencies = ["pytest", "requests", "numpy", "packaging", "typing-extensions", "psutil"]
+dependencies = [
+    "pytest~=9.0",
+    "requests~=2.32",
+    "numpy~=2.2",
+    "packaging~=26.0",
+    "typing-extensions~=4.15",
+    "psutil~=7.2",
+]
 
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:test}"
@@ -56,23 +63,29 @@ type = "virtual"
 path = ".venv"
 python = "3.10"
 dependencies = [
-    "requests",
-    "numpy",
-    "packaging",
-    "opencv-python",
-    "mkdocs-material",
-    "mkdocstrings-python",
-    "black",
-    "ruff",
-    "mypy",
-    "psutil",
-    "rich",
-    "typing-extensions"
+    "requests~=2.32",
+    "numpy~=2.2",
+    "packaging~=26.0",
+    "opencv-python~=4.13",
+    "mkdocs>=1.6,<2.0",
+    "mkdocs-material~=9.7",
+    "mkdocstrings-python~=2.0",
+    "black~=26.3",
+    "ruff~=0.15",
+    "mypy~=1.19",
+    "psutil~=7.2",
+    "rich~=14.3",
+    "typing-extensions~=4.15",
 ]
 
 [tool.hatch.envs.docs]
 detached = true
-dependencies = ["mkdocs-material", "mkdocstrings-python", "black"]
+dependencies = [
+    "mkdocs>=1.6,<2.0",
+    "mkdocs-material~=9.7",
+    "mkdocstrings-python~=2.0",
+    "black~=26.3",
+]
 
 [tool.hatch.envs.docs.scripts]
 serve = "mkdocs serve"

@@ -1,7 +1,7 @@
 """Module with all the custom errors."""
 
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 
 class DistNotFoundError(Exception):
@@ -75,7 +75,7 @@ class ProjectNotFoundError(Exception):
 class PekatNotStartedError(Exception):
     """Raised when [`Instance`][PekatVisionSDK.Instance] couldn't start a project."""
 
-    def __init__(self, output: List[str], *args: Any) -> None:
+    def __init__(self, output: list[str], *args: Any) -> None:
         super().__init__(*args)
         self.output = output
 

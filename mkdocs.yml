@@ -57,9 +57,6 @@ plugins:
       handlers:
         python:
           paths: [src]
-          selection:
-            rendering:
-              merge_init_into_class: true
           options:
             members_order: source
             separate_signature: true
@@ -73,8 +70,6 @@ plugins:
             show_bases: false
             show_signature_annotations: true
             docstring_style: google
-          import:
-            - https://docs.python.org/3/objects.inv
 
 hooks:
   - hooks/on_pre_build.py

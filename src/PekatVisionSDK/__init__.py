@@ -13,7 +13,7 @@ from .errors import (
     ProjectNotFoundError,
 )
 from .instance import Instance
-from .result import Result
+from .result import Result, TypedResult
 
 __all__ = [
     "Context",
@@ -30,6 +30,7 @@ __all__ = [
     "PortIsAllocatedError",
     "ProjectNotFoundError",
     "Result",
+    "TypedResult",
     "__version__",
     "utils",
 ]
