@@ -18,7 +18,6 @@ class Result(NamedTuple):
     """
 
     image_bytes: Optional[bytes]
-    context: Context
 
     def get_decoded_image(self) -> NDArray[np.uint8]:
         """Get the decoded image.
@@ -36,3 +35,25 @@ class Result(NamedTuple):
             raise OpenCVImportError from e
 
         return cv2.imdecode(np.frombuffer(self.image_bytes, np.uint8), cv2.IMREAD_COLOR)
+
+
+class UntypedResult(Result):
+    """Class representing the result of [`Instance.analyze`][PekatVisionSDK.Instance.analyze].
+
+    Attributes:
+        image_bytes: Encoded PNG image, to get the decoded image, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
+        context: Context dictionary.
+    """
+
+    context: dict
+
+
+class TypedResult(Result):
+    """Class representing the result of [`Instance.analyze`][PekatVisionSDK.Instance.analyze].
+
+    Attributes:
+        image_bytes: Encoded PNG image, to get the decoded image, use [`get_decoded_image`][PekatVisionSDK.Result.get_decoded_image].
+        context: Context dictionary.
+    """
+
+    context: Context
