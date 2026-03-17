@@ -12,7 +12,7 @@ import sys
 from functools import cached_property
 from multiprocessing import shared_memory
 from pathlib import Path
-from typing import Any, List, Literal, Optional, Tuple, Union, get_args, cast, overload
+from typing import Any, List, Literal, Optional, Tuple, Union, cast, get_args, overload
 
 import netifaces
 import numpy as np
@@ -30,7 +30,7 @@ from .errors import (
     PortIsAllocatedError,
     ProjectNotFoundError,
 )
-from .result import Result, TypedResult, UntypedResult
+from .result import Result, TypedResult, _BaseResult
 
 StrOrPathLike = Union[str, os.PathLike]
 ResponseType = Literal["context", "image", "annotated_image", "heatmap"]
@@ -431,7 +431,7 @@ class Instance:
         timeout: float = 20,
         *,
         typing: Literal["untyped"],
-    ) -> UntypedResult: ...
+    ) -> Result: ...
 
     @overload
     def analyze(
@@ -451,7 +451,7 @@ class Instance:
         data: Optional[str] = None,
         timeout: float = 20,
         typing: Literal["typed", "untyped"] = "typed",
-    ) -> Result:
+    ) -> _BaseResult:
         """Send an image to the running project and get the results.
 
         `response_type` will affect the `image` of the returned [`Result`][PekatVisionSDK.Result]:
@@ -499,7 +499,7 @@ class Instance:
             raise InvalidDataTypeError(type(image))
         if typing == "typed":
             return cast("TypedResult", result)
-        return cast("UntypedResult", result)
+        return cast("Result", result)
 
     def send_random(
         self,
@@ -507,7 +507,7 @@ class Instance:
         response_type: ResponseType = "context",
         data: Optional[str] = None,
         timeout: float = 20,
-    ) -> Result:
+    ) -> TypedResult:
         """Send random data for analysis.
 
         Arguments:
