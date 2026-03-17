@@ -12,7 +12,7 @@ import sys
 from functools import cached_property
 from multiprocessing import shared_memory
 from pathlib import Path
-from typing import Any, List, Literal, Optional, Tuple, Union, get_args
+from typing import Any, List, Literal, Optional, Tuple, Union, get_args, cast, overload
 
 import netifaces
 import numpy as np
@@ -30,7 +30,7 @@ from .errors import (
     PortIsAllocatedError,
     ProjectNotFoundError,
 )
-from .result import Result
+from .result import Result, TypedResult, UntypedResult
 
 StrOrPathLike = Union[str, os.PathLike]
 ResponseType = Literal["context", "image", "annotated_image", "heatmap"]
@@ -422,12 +422,35 @@ class Instance:
         """Send bytes from a file to the running project and get the results."""
         return self._analyze_bytes(image.read_bytes(), response_type, data, timeout)
 
+    @overload
     def analyze(
         self,
         image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
         response_type: ResponseType = "context",
         data: Optional[str] = None,
         timeout: float = 20,
+        *,
+        typing: Literal["untyped"],
+    ) -> UntypedResult: ...
+
+    @overload
+    def analyze(
+        self,
+        image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
+        response_type: ResponseType = "context",
+        data: Optional[str] = None,
+        timeout: float = 20,
+        *,
+        typing: Literal["typed"] = "typed",
+    ) -> TypedResult: ...
+
+    def analyze(
+        self,
+        image: Union[NDArray[np.uint8], bytes, StrOrPathLike],
+        response_type: ResponseType = "context",
+        data: Optional[str] = None,
+        timeout: float = 20,
+        typing: Literal["typed", "untyped"] = "typed",
     ) -> Result:
         """Send an image to the running project and get the results.
 
@@ -446,6 +469,7 @@ class Instance:
             data: Data to be added to the query.
                 Project will be able to access this under the `"data"` key in `context`.
             timeout: Timeout in seconds for the analyze request.
+            typing: Whether to return a typed or untyped result.
 
         Raises:
             InvalidResponseTypeError: If `response_type` is not any of the allowed response types.
@@ -459,16 +483,23 @@ class Instance:
         if response_type not in ALLOWED_RESPONSE_TYPES:
             raise InvalidResponseTypeError(response_type)
 
-        if isinstance(image, (str, os.PathLike)):
-            return self._analyze_file(Path(image), response_type, data, timeout)
-        if isinstance(image, bytes):
-            return self._analyze_bytes(image, response_type, data, timeout)
-        if isinstance(image, np.ndarray):
-            if self._can_use_shm:
-                return self._analyze_numpy_shm(image, response_type, data, timeout)
-            return self._analyze_numpy(image, response_type, data, timeout)
+        result: Result | None = None
 
-        raise InvalidDataTypeError(type(image))
+        if isinstance(image, (str, os.PathLike)):
+            result = self._analyze_file(Path(image), response_type, data, timeout)
+        elif isinstance(image, bytes):
+            result = self._analyze_bytes(image, response_type, data, timeout)
+        elif isinstance(image, np.ndarray):
+            if self._can_use_shm:
+                result = self._analyze_numpy_shm(image, response_type, data, timeout)
+            else:
+                result = self._analyze_numpy(image, response_type, data, timeout)
+
+        if result is None:
+            raise InvalidDataTypeError(type(image))
+        if typing == "typed":
+            return cast("TypedResult", result)
+        return cast("UntypedResult", result)
 
     def send_random(
         self,
