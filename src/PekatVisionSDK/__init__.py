@@ -1,4 +1,6 @@
+from . import utils
 from .__about__ import __version__
+from .context import Context, FullContext, ModuleType
 from .errors import (
     DistNotExistsError,
     DistNotFoundError,
@@ -14,16 +16,20 @@ from .instance import Instance
 from .result import Result
 
 __all__ = [
+    "Context",
     "DistNotExistsError",
     "DistNotFoundError",
+    "FullContext",
+    "Instance",
     "InvalidDataTypeError",
     "InvalidResponseTypeError",
+    "ModuleType",
     "NoConnectionError",
     "OpenCVImportError",
     "PekatNotStartedError",
     "PortIsAllocatedError",
     "ProjectNotFoundError",
-    "Instance",
     "Result",
     "__version__",
+    "utils",
 ]

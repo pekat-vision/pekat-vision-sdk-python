@@ -19,6 +19,7 @@ class Context(TypedDict):
     save: bool
     processing: bool
 
+
 class Position(TypedDict):
     """Class representing the position of a detected object."""
 
@@ -41,6 +42,7 @@ class ModuleType(StrEnum):
     CLASSIFIER = "CLASSIFIER"
     DETECTOR = "DETECTOR"
     CODE = "CODE"
+    OCR = "OCR"
 
 
 class ClassName(TypedDict):
