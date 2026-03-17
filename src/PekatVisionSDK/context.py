@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import NotRequired, TypedDict
+from typing import TypedDict
+
+from typing_extensions import NotRequired
 
 
 class Context(TypedDict):
