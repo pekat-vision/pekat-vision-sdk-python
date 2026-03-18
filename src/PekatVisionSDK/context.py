@@ -1,4 +1,4 @@
-"""Module holding utility functions for working with Context."""
+"""Module holding Context types."""
 
 from __future__ import annotations
 

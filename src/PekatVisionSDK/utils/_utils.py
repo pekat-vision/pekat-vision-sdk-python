@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from .errors import OpenCVImportError
+from PekatVisionSDK.errors import OpenCVImportError
 
 if TYPE_CHECKING:
     import numpy as np
@@ -41,13 +41,13 @@ def filter_rectangles(
     The function returns empty list if it's not a full context.
 
     Arguments:
-        provided_context: Context from Instance.analyze to be filtered.
+        provided_context: Context to be filtered.
         filters: Filter parameters.
         modules: List or set of modules to filter by.
         labels: List of labels to filter by.
 
     Returns:
-        lict[context.DetectedRectangle]: Filtered list of detected rectangles.
+        list[context.DetectedRectangle]: Filtered list of detected rectangles.
     """
     if not provided_context["processing"]:
         return []
@@ -78,7 +78,7 @@ def filter_function(
         labels: List or set of labels to filter by.
 
     Returns:
-        bool: True if rectangle passes the filter, False otherwise.
+        bool: `True` if rectangle passes the filter, `False` otherwise.
     """
     return (
         _check_bounds(rectangle["x"], filters.get("min_x"), filters.get("max_x"))

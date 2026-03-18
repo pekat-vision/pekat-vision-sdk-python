@@ -37,6 +37,8 @@ nav:
       - Instance: documentation/instance.md
       - Result: documentation/result.md
       - Errors: documentation/errors.md
+      - Context: documentation/context.md
+      - Utils: documentation/utils.md
 
 markdown_extensions:
   - attr_list
